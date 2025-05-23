@@ -8,6 +8,18 @@ import yaml
 from datetime import datetime
 import numpy as np
 
+
+class NumpyEncoder(json.JSONEncoder):
+    """Custom JSON encoder that handles numpy types."""
+    def default(self, obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        elif isinstance(obj, np.floating):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return super(NumpyEncoder, self).default(obj)
+
 from ..models.architectures import (
     create_mobilenet_model, 
     create_custom_cnn,
@@ -139,14 +151,14 @@ class ModelTrainer:
         if self.dataset_info:
             dataset_info_path = self.config_dir / 'dataset_info.json'
             with open(dataset_info_path, 'w') as f:
-                json.dump(self.dataset_info, f, indent=2)
+                json.dump(self.dataset_info, f, indent=2, cls=NumpyEncoder)
         
         # Save model summary
         if self.model:
             summary = get_model_summary(self.model)
             summary_path = self.config_dir / 'model_summary.json'
             with open(summary_path, 'w') as f:
-                json.dump(summary, f, indent=2)
+                json.dump(summary, f, indent=2, cls=NumpyEncoder)
             
             # Save model architecture plot
             try:
@@ -254,15 +266,22 @@ class ModelTrainer:
             verbose=1
         )
         
-        # Save final model
-        final_model_path = self.output_dir / 'final_model.h5'
-        self.model.save(final_model_path)
-        print(f"\nFinal model saved to {final_model_path}")
+        # Save final model (weights only to avoid pickle issues)
+        final_model_path = self.output_dir / 'final_model.weights.h5'
+        self.model.save_weights(final_model_path)
+        
+        # Also save the full model in Keras format
+        keras_model_path = self.output_dir / 'final_model.keras'
+        try:
+            self.model.save(keras_model_path)
+            print(f"\nFull model saved to {keras_model_path}")
+        except:
+            print(f"\nModel weights saved to {final_model_path}")
         
         # Save training history
         history_path = self.output_dir / 'training_history.json'
         with open(history_path, 'w') as f:
-            json.dump(history.history, f, indent=2)
+            json.dump(history.history, f, indent=2, cls=NumpyEncoder)
         
         return history.history
     
@@ -292,7 +311,7 @@ class ModelTrainer:
         # Save evaluation results
         eval_path = self.output_dir / 'evaluation_results.json'
         with open(eval_path, 'w') as f:
-            json.dump(metrics, f, indent=2)
+            json.dump(metrics, f, indent=2, cls=NumpyEncoder)
         
         print("\nEvaluation Results:")
         for name, value in metrics.items():

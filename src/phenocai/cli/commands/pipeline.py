@@ -131,7 +131,15 @@ def full(station, instrument, year, prediction_years, model_type, preset,
     
     # Create CliRunner at the beginning for use throughout
     from click.testing import CliRunner
-    runner = CliRunner()
+    import os
+    
+    # Preserve environment for CliRunner
+    env = os.environ.copy()
+    env['PHENOCAI_CURRENT_STATION'] = config.current_station
+    env['PHENOCAI_CURRENT_INSTRUMENT'] = config.current_instrument
+    env['PHENOCAI_CURRENT_YEAR'] = str(config.current_year)
+    
+    runner = CliRunner(env=env)
     
     # Step 1: Dataset Creation
     click.echo(f"\n📊 Step 1: Dataset Creation")
@@ -142,10 +150,11 @@ def full(station, instrument, year, prediction_years, model_type, preset,
         else:
             click.echo(f"Creating dataset with {test_size:.0%} test, {val_size:.0%} val...")
             
-            # Call dataset create command
+            # Call dataset create command with explicit output path
             cmd_args = [
                 '--test-size', str(test_size),
-                '--val-size', str(val_size)
+                '--val-size', str(val_size),
+                '--output', str(dataset_path)
             ]
             if instrument:
                 cmd_args.extend(['--instrument', instrument])
@@ -162,6 +171,7 @@ def full(station, instrument, year, prediction_years, model_type, preset,
             filtered_path = config.experimental_data_dir / filtered_name
             if filtered_path.exists():
                 click.echo(f"✓ Clean dataset already exists: {filtered_path}")
+                dataset_path = filtered_path  # Use filtered dataset
             else:
                 click.echo(f"Filtering to clean data only...")
                 from .dataset import filter as dataset_filter
@@ -172,6 +182,7 @@ def full(station, instrument, year, prediction_years, model_type, preset,
                     return 1
                 
                 click.echo(f"✓ Clean dataset created: {filtered_path}")
+                dataset_path = filtered_path  # Use filtered dataset
     
     except Exception as e:
         click.echo(f"❌ Error in dataset creation: {e}", err=True)
@@ -188,7 +199,7 @@ def full(station, instrument, year, prediction_years, model_type, preset,
             
             # Call train command
             cmd_args = [
-                str(config.experimental_data_dir / filtered_name),
+                str(dataset_path),  # Use the actual dataset path
                 '--preset', preset,
                 '--output-dir', str(model_dir)
             ]
@@ -213,7 +224,7 @@ def full(station, instrument, year, prediction_years, model_type, preset,
         # Call evaluate command
         cmd_args = [
             str(model_path),
-            str(config.experimental_data_dir / filtered_name),
+            str(dataset_path),  # Use the actual dataset path
             '--save-predictions',
             '--generate-plots'
         ]

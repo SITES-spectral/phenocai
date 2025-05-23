@@ -179,3 +179,8 @@
 
   The pipeline command (uv run phenocai pipeline full) automates all these steps with sensible
   defaults, but manual execution gives you complete flexibility!
+  ----
+  phenocai train …
+      model "/home/jobelund/lu2024-12-46/SITES/Spectral/analysis/phenocams/transfer_learning/lonnstor
+      p/experimental_data/lonnstorp_PHE01_dataset_2024_splits_20_10.csv" --preset mobilenet_quick
+      --epochs 2

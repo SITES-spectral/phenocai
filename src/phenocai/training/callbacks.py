@@ -40,13 +40,13 @@ def create_callbacks(
     Path(log_dir).mkdir(parents=True, exist_ok=True)
     
     # Model checkpoint
-    checkpoint_path = str(Path(checkpoint_dir) / 'best_model.h5')
+    checkpoint_path = str(Path(checkpoint_dir) / 'best_model.weights.h5')
     checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
         filepath=checkpoint_path,
         monitor=monitor,
         mode=mode,
         save_best_only=save_best_only,
-        save_weights_only=save_weights_only,
+        save_weights_only=True,  # Force weights only to avoid pickle errors
         verbose=verbose
     )
     callbacks.append(checkpoint_callback)
