@@ -18,6 +18,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Full Annotation Compatibility**: Output matches manual annotation format exactly
 - **Year-Long Processing**: Process entire years of phenocam data automatically
 
+##### Complete Pipeline System
+- **End-to-End Automation**: Single command runs dataset creation → training → evaluation → prediction
+- **Interactive Notebook**: Marimo-based visual interface for pipeline execution
+- **Pipeline Status Monitoring**: Check progress and results across all stages
+- **Configurable Workflows**: Customize training parameters, prediction years, and output formats
+- **Dry Run Capability**: Preview pipeline execution without running
+
 #### Enhanced Dataset Creation
 - **Grouped Stratified Splitting**: Train/test/val splits that keep same-day images together
 - **Class Balance Preservation**: Maintains snow/no-snow ratios across all splits

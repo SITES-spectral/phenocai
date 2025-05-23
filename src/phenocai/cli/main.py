@@ -50,6 +50,7 @@ from .commands.evaluate import evaluate
 from .commands.predict import predict
 from .commands.config import config_cmd
 from .commands.convert import convert
+from .commands.pipeline import pipeline
 from .analyze import analyze
 
 # Add command groups to main CLI
@@ -60,6 +61,7 @@ cli.add_command(evaluate)
 cli.add_command(predict)
 cli.add_command(config_cmd)
 cli.add_command(convert)
+cli.add_command(pipeline)
 cli.add_command(analyze)
 
 

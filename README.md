@@ -30,6 +30,8 @@ PhenoCAI (Phenological Camera AI) is a Python package for automated analysis and
 
 ## What's New (v0.2.0)
 
+- **🚀 Complete Pipeline**: Single command runs dataset creation → training → evaluation → prediction
+- **📓 Interactive Notebook**: Marimo notebook for visual pipeline execution and monitoring
 - **Complete Prediction System**: Apply trained models to process entire years of phenocam data
 - **Enhanced Dataset Creation**: Automatic train/test/val splits with grouped stratification
 - **File Path Support**: Full image paths with day-of-year subdirectory structure
@@ -55,7 +57,24 @@ source src/phenocai/config/env.sh
 
 ## Quick Start
 
-### 1. Setup and Configuration
+### 🚀 Complete Pipeline (Recommended)
+```bash
+# Run the entire pipeline with one command
+uv run phenocai pipeline full
+
+# Or with custom settings
+uv run phenocai pipeline full \
+    --station lonnstorp \
+    --instrument LON_AGR_PL01_PHE01 \
+    --year 2024 \
+    --prediction-years 2023 2024 2025 \
+    --clean-only
+
+# Interactive notebook (recommended for beginners)
+marimo edit notebooks/phenocai_pipeline.py
+```
+
+### 📋 Step-by-Step Setup
 ```bash
 # Check system configuration
 uv run phenocai info

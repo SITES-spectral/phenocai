@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "workflow_evaluation.md",
+                "file": "quick_reference.md",
                 "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "workflow_evaluation"
+              "title": "quick_reference"
             }
           }
         ]
@@ -170,15 +170,15 @@
   },
   "active": "b5b31cb712ade762",
   "lastOpenFiles": [
-    "workflow_data_preparation.md",
     "training_guide.md",
-    "quick_reference.md",
+    "workflow_data_preparation.md",
     "workflow_complete_guide.md",
+    "workflow_evaluation.md",
+    "quick_reference.md",
     "implementation_plan.md",
     "api_reference.md",
     "workflow_training.md",
     "workflow_prediction.md",
-    "workflow_overview.md",
-    "workflow_evaluation.md"
+    "workflow_overview.md"
   ]
 }
