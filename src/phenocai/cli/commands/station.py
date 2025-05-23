@@ -53,26 +53,34 @@ def switch(station_name, instrument, year):
     # Get station configuration
     station_cfg = get_station_config(station_name)
     
-    # Use defaults if not provided
-    if instrument is None:
-        instrument = station_cfg['default_instrument']
-    else:
-        # Validate instrument
-        if not validate_instrument_for_station(station_name, instrument):
-            click.echo(f"Error: Invalid instrument '{instrument}' for station '{station_name}'", err=True)
-            click.echo(f"Valid instruments: {', '.join(station_cfg['instruments'])}", err=True)
-            return 1
-    
+    # Handle year first
     if year is None:
         from ...config.station_configs import get_default_years
         year = get_default_years().get(station_name, '2024')
     
-    click.echo(f"\nSwitching to {station_cfg['full_name']} ({station_name})...")
-    
-    # Update environment variables
-    os.environ['PHENOCAI_CURRENT_STATION'] = station_name
-    os.environ['PHENOCAI_CURRENT_INSTRUMENT'] = instrument
+    # Update year in environment
     os.environ['PHENOCAI_CURRENT_YEAR'] = year
+    current_config.current_year = year
+    
+    try:
+        # Use the new switch_station method which validates against stations.yaml
+        current_config.switch_station(station_name, instrument)
+        
+        # Get the actual instrument used (in case default was selected)
+        instrument = current_config.current_instrument
+        
+        click.echo(f"\nSwitched to {station_cfg['full_name']} ({station_name})")
+        click.echo(f"  Instrument: {instrument}")
+        click.echo(f"  Year: {year}")
+        
+    except ValueError as e:
+        click.echo(f"Error: {e}", err=True)
+        
+        # Show available instruments from registry
+        available = current_config.list_available_instruments()
+        if available:
+            click.echo(f"Available instruments: {', '.join(available)}", err=True)
+        return 1
     
     # Update env.sh file
     env_path = Path(__file__).parent.parent.parent / 'config' / 'env.sh'
@@ -112,6 +120,8 @@ def switch(station_name, instrument, year):
 @click.argument('station_name', type=click.Choice(get_all_stations()))
 def info(station_name):
     """Show detailed information about a station."""
+    from ...config.setup import config as current_config
+    
     cfg = get_station_config(station_name)
     
     click.echo(f"\n=== {cfg['full_name']} ({station_name}) ===")
@@ -121,11 +131,61 @@ def info(station_name):
     click.echo(f"Timezone: {cfg['timezone']}")
     
     click.echo(f"\nInstruments:")
-    for inst in cfg['instruments']:
-        is_default = " (default)" if inst == cfg['default_instrument'] else ""
-        click.echo(f"  • {inst}{is_default}")
+    
+    # Try to get instruments from registry if available
+    try:
+        # Temporarily switch to check instruments (without updating env vars)
+        registry = current_config._registry
+        if registry:
+            station_info = registry.get_station(station_name)
+            if station_info:
+                for inst_id, inst in station_info.instruments.items():
+                    status = f" [{inst.status}]" if inst.status != "Active" else ""
+                    is_default = " (default)" if inst_id == cfg['default_instrument'] else ""
+                    click.echo(f"  • {inst_id}{is_default}{status}")
+                    if inst.ecosystem:
+                        click.echo(f"    Ecosystem: {inst.ecosystem}")
+                    if inst.viewing_direction:
+                        click.echo(f"    Viewing: {inst.viewing_direction} ({inst.azimuth}°)")
+            else:
+                # Fallback to config file
+                for inst in cfg['instruments']:
+                    is_default = " (default)" if inst == cfg['default_instrument'] else ""
+                    click.echo(f"  • {inst}{is_default}")
+        else:
+            # Fallback to config file
+            for inst in cfg['instruments']:
+                is_default = " (default)" if inst == cfg['default_instrument'] else ""
+                click.echo(f"  • {inst}{is_default}")
+    except:
+        # Fallback to config file
+        for inst in cfg['instruments']:
+            is_default = " (default)" if inst == cfg['default_instrument'] else ""
+            click.echo(f"  • {inst}{is_default}")
     
     click.echo(f"\nTypical ROIs: {', '.join(cfg['typical_rois'])}")
     
     if station_name in get_primary_stations():
         click.echo(f"\n✓ This is a PRIMARY station for the PhenoCAI project")
+
+
+@station.command()
+def instruments():
+    """List instruments for the current station."""
+    from ...config.setup import config as current_config
+    
+    click.echo(f"\n=== Instruments for {current_config.current_station} ===")
+    
+    available = current_config.list_available_instruments()
+    if not available:
+        click.echo("No instruments found or registry not loaded.")
+        return
+    
+    current = current_config.current_instrument
+    
+    for inst in available:
+        is_current = " (current)" if inst == current else ""
+        click.echo(f"  • {inst}{is_current}")
+    
+    click.echo(f"\nTo switch instrument, use:")
+    click.echo(f"  uv run phenocai station switch {current_config.current_station} --instrument INSTRUMENT_ID")

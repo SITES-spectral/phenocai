@@ -26,18 +26,38 @@ def dataset():
 @click.option('--test-size', default=0.2, help='Test set fraction (default: 0.2)')
 @click.option('--val-size', default=0.1, help='Validation set fraction (default: 0.1)')
 @click.option('--format', type=click.Choice(['csv', 'parquet']), default='csv', help='Output format')
-def create(output, include_unannotated, test_size, val_size, format):
+@click.option('--instrument', '-i', help='Instrument ID (overrides current instrument)')
+def create(output, include_unannotated, test_size, val_size, format, instrument):
     """Create dataset from current station's annotations."""
-    click.echo(f"Creating dataset for {config.current_station}...")
+    # Handle instrument switching if provided
+    if instrument:
+        try:
+            config.switch_instrument(instrument)
+            click.echo(f"Using instrument: {instrument}")
+        except ValueError as e:
+            click.echo(f"Error: {e}", err=True)
+            return 1
+    
+    click.echo(f"Creating dataset for {config.current_station} - {config.current_instrument}...")
     
     # Set output path with intelligent naming
     if output is None:
-        # Generate filename based on station, year, and options
+        # Generate filename based on station, instrument, year, and options
         suffix = '.parquet' if format == 'parquet' else '.csv'
         filename_parts = [
-            config.current_station,
-            f'dataset_{config.current_year}'
+            config.current_station
         ]
+        
+        # Add instrument if there are multiple for this station
+        available_instruments = config.list_available_instruments()
+        if len(available_instruments) > 1:
+            # Extract just the instrument number part (e.g., PHE01 from LON_AGR_PL01_PHE01)
+            inst_parts = config.current_instrument.split('_')
+            if len(inst_parts) >= 4:
+                inst_suffix = inst_parts[-1]  # Get PHE01
+                filename_parts.append(inst_suffix)
+        
+        filename_parts.append(f'dataset_{config.current_year}')
         
         if include_unannotated:
             filename_parts.append('with_unannotated')

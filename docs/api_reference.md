@@ -5,21 +5,51 @@
 ### phenocai.config
 
 #### `PhenoCAIConfig`
-Central configuration class for the PhenoCAI system.
+Central configuration class for the PhenoCAI system with dynamic instrument support.
 
 ```python
 from phenocai.config.setup import config
 
 # Access configuration
 config.current_station  # Current station name
+config.current_instrument  # Current instrument ID
 config.batch_size       # Training batch size
 config.snow_min_pixel_percentage  # Snow detection threshold
 
 # Setup directories
 config.setup_directories()
 
-# Validate configuration
+# Validate configuration (now includes instrument validation)
 warnings = config.validate_configuration()
+
+# Dynamic station/instrument switching
+config.switch_station('lonnstorp', 'LON_AGR_PL01_PHE02')
+config.switch_instrument('LON_AGR_PL01_PHE01')
+
+# List available instruments
+instruments = config.list_available_instruments()
+```
+
+#### Station Registry
+Access to stations.yaml validation and information.
+
+```python
+from phenocai.config.station_registry import get_registry
+
+registry = get_registry()
+
+# Validate instrument for station
+is_valid = registry.validate_instrument('lonnstorp', 'LON_AGR_PL01_PHE01')
+
+# Get station information
+station_info = registry.get_station('lonnstorp')
+print(f"Station: {station_info.name}")
+print(f"Instruments: {station_info.active_instruments}")
+
+# Get instrument details
+instrument_info = registry.get_instrument_info('lonnstorp', 'LON_AGR_PL01_PHE01')
+print(f"Ecosystem: {instrument_info.ecosystem}")
+print(f"Viewing direction: {instrument_info.viewing_direction}")
 ```
 
 ### phenocai.utils
@@ -180,6 +210,18 @@ def list():
     """List all available stations."""
     pass
 
+@station.command()
+@click.argument('station_name')
+@click.option('--instrument', '-i')
+def switch(station_name, instrument):
+    """Switch station with optional instrument."""
+    pass
+
+@station.command()
+def instruments():
+    """List instruments for current station."""
+    pass
+
 # Dataset commands
 @cli.group()
 def dataset():
@@ -189,13 +231,15 @@ def dataset():
 @dataset.command()
 @click.option('--output', '-o', type=click.Path())
 @click.option('--include-unannotated', is_flag=True)
-def create(output, include_unannotated):
+@click.option('--instrument', '-i', help='Instrument ID')
+def create(output, include_unannotated, instrument):
     """Create dataset from annotations.
     
     Auto-generates filename if output not specified:
-    - Format: {station}_dataset_{year}_splits_{test}_{val}.csv
-    - Example: lonnstorp_dataset_2024_splits_20_10.csv
+    - Format: {station}_{instrument}_dataset_{year}_splits_{test}_{val}.csv
+    - Example: lonnstorp_PHE01_dataset_2024_splits_20_10.csv
     - Saved to: {station}/experimental_data/
+    - Validates instrument against stations.yaml
     """
     pass
 

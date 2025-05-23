@@ -197,30 +197,34 @@ graph TD
 source src/phenocai/config/env_lonnstorp.sh
 python src/phenocai/config/setup.py
 
-# 2. Create dataset with annotations
+# 1b. Check available instruments and switch if needed
+uv run phenocai station instruments
+uv run phenocai station switch lonnstorp --instrument LON_AGR_PL01_PHE01
+
+# 2. Create dataset with annotations (auto-named)
 uv run phenocai dataset create \
-    --output lonnstorp_2024_dataset.csv \
     --test-size 0.2 \
     --val-size 0.1
+# Creates: lonnstorp_PHE01_dataset_2024_splits_20_10.csv
 
 # 3. Check data quality
-python scripts/analyze_quality_issues.py lonnstorp_2024_dataset.csv
+python scripts/analyze_quality_issues.py lonnstorp_PHE01_dataset_2024_splits_20_10.csv
 # Output: 1,547 total samples
 #   - 404 clean (no flags): 26.1%
 #   - 1,143 with quality issues: 73.9%
 
-# 4. Train on clean subset first
-uv run phenocai dataset filter lonnstorp_2024_dataset.csv \
-    clean_subset.csv --no-flags
+# 4. Train on clean subset first (auto-generates filename)
+uv run phenocai dataset filter lonnstorp_PHE01_dataset_2024_splits_20_10.csv --no-flags
+# Creates: lonnstorp_PHE01_dataset_2024_splits_20_10_clean_filtered.csv
     
-uv run phenocai train model clean_subset.csv \
+uv run phenocai train model lonnstorp_PHE01_dataset_2024_splits_20_10_clean_filtered.csv \
     --model-type mobilenet \
     --epochs 20 \
     --output-dir models/clean_baseline/
 
 # 5. Evaluate performance
 uv run phenocai evaluate model models/clean_baseline/final_model.h5 \
-    clean_subset.csv --split test
+    lonnstorp_PHE01_dataset_2024_splits_20_10_clean_filtered.csv --split test
 
 # 6. Apply to full year of new images
 uv run phenocai predict batch models/clean_baseline/final_model.h5 \
@@ -232,7 +236,7 @@ uv run phenocai predict batch models/clean_baseline/final_model.h5 \
 # 7. Export results for analysis
 uv run phenocai predict export predictions/2024/ \
     --format csv \
-    --output lonnstorp_2024_predictions.csv
+    --output lonnstorp_PHE01_2024_predictions.csv
 ```
 
 ### Results You Can Expect

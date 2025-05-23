@@ -81,6 +81,38 @@ graph LR
     style H fill:#d1c4e9
 ```
 
+### 4. Multiple Stations and Instruments
+
+PhenoCAI works with cameras at different research stations across Sweden:
+
+```mermaid
+graph TD
+    A[🏢 Research Stations] --> B[🌾 Lönnstorp<br/>Agricultural]
+    A --> C[🌲 Röbäcksdalen<br/>Agricultural]
+    A --> D[🏔️ Abisko<br/>Subarctic]
+    
+    B --> E[📷 PHE01<br/>Main Camera]
+    B --> F[📷 PHE02<br/>Secondary Camera]
+    
+    C --> G[📷 PHE01<br/>Agricultural View]
+    C --> H[📷 FOR01<br/>Forest View]
+    
+    style A fill:#e3f2fd
+    style B fill:#fff3e0
+    style C fill:#e8f5e9
+    style D fill:#f3e5f5
+    style E fill:#ffecb3
+    style F fill:#ffecb3
+    style G fill:#c8e6c9
+    style H fill:#81c784
+```
+
+Each station can have multiple cameras (instruments) looking at different areas, so PhenoCAI helps you:
+- Switch between stations easily
+- Select specific cameras/instruments
+- Create datasets for different viewing angles
+- Validate that instruments actually exist
+
 ## The Three Main Stages
 
 ### Stage 1: Prepare the Data 📚

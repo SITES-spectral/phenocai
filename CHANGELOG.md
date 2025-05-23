@@ -41,6 +41,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Intelligent Dataset Naming**: Auto-generates descriptive filenames based on station, year, and options
 - **Smart Output Paths**: Datasets automatically saved to station's experimental_data directory
 - **Enhanced Filter Command**: Auto-generates descriptive output filenames for filtered datasets
+- **Dynamic Instrument Support**: Validation against stations.yaml, CLI --instrument option
+- **Instrument-Aware Naming**: Includes instrument ID in filenames when multiple instruments exist
+- **Station Registry**: Centralized validation of stations and instruments from YAML configuration
 
 ## [0.1.0] - 2025-05-23
 

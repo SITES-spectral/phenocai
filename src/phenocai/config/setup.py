@@ -12,6 +12,8 @@ from typing import Dict, List, Tuple, Optional
 import numpy as np
 import yaml
 
+from .station_registry import get_registry, StationRegistry
+
 
 @dataclass
 class PhenoCAIConfig:
@@ -122,6 +124,14 @@ class PhenoCAIConfig:
         """Initialize derived paths and validate configuration."""
         if self.performance_log_dir is None:
             self.performance_log_dir = self.experimental_data_dir / 'performance_logs'
+        
+        # Try to load and validate station/instrument
+        try:
+            self._registry = get_registry()
+            self._validate_station_instrument()
+        except Exception as e:
+            logging.warning(f"Could not validate station/instrument: {e}")
+            self._registry = None
     
     def setup_directories(self) -> None:
         """Creates necessary directories if they don't exist."""
@@ -144,9 +154,98 @@ class PhenoCAIConfig:
         
         logging.info("Checked/created necessary directories.")
     
+    def _validate_station_instrument(self) -> None:
+        """Validate current station and instrument against stations.yaml."""
+        if not self._registry:
+            raise RuntimeError("Station registry not loaded")
+            
+        # Check if station exists
+        station = self._registry.get_station(self.current_station)
+        if not station:
+            available = ', '.join(self._registry.list_stations())
+            raise ValueError(f"Unknown station '{self.current_station}'. Available: {available}")
+        
+        # Check if instrument is valid for this station
+        if not self._registry.validate_instrument(self.current_station, self.current_instrument):
+            available = ', '.join(self._registry.list_instruments(self.current_station))
+            raise ValueError(
+                f"Invalid instrument '{self.current_instrument}' for station '{self.current_station}'. "
+                f"Available: {available}"
+            )
+    
+    def switch_station(self, station_name: str, instrument_id: Optional[str] = None) -> None:
+        """
+        Switch to a different station and optionally set instrument.
+        Updates environment variables dynamically.
+        
+        Args:
+            station_name: Name of the station to switch to
+            instrument_id: Optional instrument ID. If None, uses default instrument
+        """
+        station = self._registry.get_station(station_name.lower())
+        if not station:
+            available = ', '.join(self._registry.list_stations())
+            raise ValueError(f"Unknown station '{station_name}'. Available: {available}")
+        
+        # If no instrument specified, use default
+        if instrument_id is None:
+            instrument_id = station.default_instrument
+            if not instrument_id:
+                raise ValueError(f"No active instruments found for station '{station_name}'")
+        
+        # Validate instrument
+        if not self._registry.validate_instrument(station_name, instrument_id):
+            available = ', '.join(self._registry.list_instruments(station_name))
+            raise ValueError(
+                f"Invalid instrument '{instrument_id}' for station '{station_name}'. "
+                f"Available: {available}"
+            )
+        
+        # Update configuration
+        self.current_station = station_name.lower()
+        self.current_instrument = instrument_id
+        
+        # Update environment variables
+        os.environ['PHENOCAI_CURRENT_STATION'] = self.current_station
+        os.environ['PHENOCAI_CURRENT_INSTRUMENT'] = self.current_instrument
+        
+        logging.info(f"Switched to station '{self.current_station}' with instrument '{self.current_instrument}'")
+    
+    def switch_instrument(self, instrument_id: str) -> None:
+        """
+        Switch to a different instrument for the current station.
+        
+        Args:
+            instrument_id: Instrument ID to switch to
+        """
+        if not self._registry.validate_instrument(self.current_station, instrument_id):
+            available = ', '.join(self._registry.list_instruments(self.current_station))
+            raise ValueError(
+                f"Invalid instrument '{instrument_id}' for station '{self.current_station}'. "
+                f"Available: {available}"
+            )
+        
+        self.current_instrument = instrument_id
+        os.environ['PHENOCAI_CURRENT_INSTRUMENT'] = self.current_instrument
+        
+        logging.info(f"Switched to instrument '{self.current_instrument}'")
+    
+    def list_available_instruments(self) -> List[str]:
+        """List available instruments for current station."""
+        if not self._registry:
+            logging.warning("Station registry not loaded, returning empty list")
+            return []
+        return self._registry.list_instruments(self.current_station)
+    
     def validate_configuration(self) -> List[str]:
         """Validate configuration and return list of warnings."""
         warnings = []
+        
+        # Validate station and instrument
+        try:
+            self._validate_station_instrument()
+        except ValueError as e:
+            warnings.append(str(e))
         
         # Check if ROI config file exists
         if not self.roi_config_file_path.exists():
@@ -186,9 +285,14 @@ class PhenoCAIConfig:
     
     def save_to_yaml(self, path: Path) -> None:
         """Save configuration to YAML file."""
+        # Get station info for metadata
+        station_info = self._registry.get_station(self.current_station)
+        
         config_dict = {
             'station': self.current_station,
+            'station_name': station_info.name if station_info else self.current_station,
             'instrument': self.current_instrument,
+            'available_instruments': self.list_available_instruments(),
             'year': self.current_year,
             'paths': {k: str(v) for k, v in self.get_all_paths().items()},
             'model_params': {

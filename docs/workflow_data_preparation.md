@@ -224,22 +224,31 @@ graph TD
 Here's how to actually do these steps:
 
 ```bash
-# Step 1: Check your setup
+# Step 1: Check your setup and available instruments
 uv run phenocai info
+uv run phenocai station instruments
+
+# Step 1b: Switch to specific instrument if needed
+uv run phenocai station switch lonnstorp --instrument LON_AGR_PL01_PHE02
 
 # Step 2: Create the dataset with automatic train/test/val splits
-uv run phenocai dataset create --output my_dataset.csv
+uv run phenocai dataset create
+# Auto-generates: lonnstorp_PHE01_dataset_2024_splits_20_10.csv
 # This automatically creates 70% train, 20% test, 10% validation splits
 
+# Step 2b: Create dataset for specific instrument
+uv run phenocai dataset create --instrument LON_AGR_PL01_PHE02
+
 # Step 3: Check the dataset info (including splits)
-uv run phenocai dataset info my_dataset.csv
+uv run phenocai dataset info lonnstorp_PHE01_dataset_2024_splits_20_10.csv
 
 # Step 4: Analyze quality issues
-python scripts/analyze_quality_issues.py my_dataset.csv
+python scripts/analyze_quality_issues.py lonnstorp_PHE01_dataset_2024_splits_20_10.csv
 
-# Step 5: Filter if needed (preserves splits)
-uv run phenocai dataset filter my_dataset.csv clean_dataset.csv \
+# Step 5: Filter if needed (auto-generates clean filename)
+uv run phenocai dataset filter lonnstorp_PHE01_dataset_2024_splits_20_10.csv \
     --exclude-flags fog high_brightness
+# Creates: lonnstorp_PHE01_dataset_2024_splits_20_10_no_fog_high_brightness_filtered.csv
 ```
 
 ## Common Problems and Solutions

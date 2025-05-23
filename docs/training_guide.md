@@ -11,9 +11,15 @@ source src/phenocai/config/env.sh
 uv sync
 ```
 
-2. Verify your current station:
+2. Verify your current station and instrument:
 ```bash
 uv run phenocai info
+
+# List available instruments for current station
+uv run phenocai station instruments
+
+# Switch to specific instrument if needed
+uv run phenocai station switch lonnstorp --instrument LON_AGR_PL01_PHE02
 ```
 
 ## Step 1: Prepare Training Data
@@ -21,7 +27,15 @@ uv run phenocai info
 First, create the dataset with train/test/validation splits:
 
 ```bash
-# Using the CLI
+# Create dataset for current station/instrument (auto-named)
+uv run phenocai dataset create
+# Creates: lonnstorp_PHE01_dataset_2024_splits_20_10.csv (if multiple instruments)
+
+# Create dataset for specific instrument
+uv run phenocai dataset create --instrument LON_AGR_PL01_PHE02
+# Creates: lonnstorp_PHE02_dataset_2024_splits_20_10.csv
+
+# Create with custom name
 uv run phenocai dataset create --output lonnstorp_dataset.csv
 
 # Or using the preparation script (recommended)

@@ -25,6 +25,8 @@ PhenoCAI (Phenological Camera AI) is a Python package for automated analysis and
 - 📋 **Educational documentation** with workflow diagrams
 - 🔮 **Production-Ready Prediction** system for processing entire years of data
 - 🎲 **Grouped Stratified Splitting** for robust train/test/val datasets
+- 🏷️ **Intelligent Dataset Naming** with station, instrument, and configuration details
+- 🔍 **Dynamic Instrument Validation** against stations.yaml configuration
 
 ## What's New (v0.2.0)
 
@@ -63,6 +65,12 @@ uv run phenocai config init
 
 # List available stations
 uv run phenocai station list
+
+# Switch station with specific instrument
+uv run phenocai station switch lonnstorp --instrument LON_AGR_PL01_PHE01
+
+# List instruments for current station
+uv run phenocai station instruments
 ```
 
 ### 2. Data Preparation
