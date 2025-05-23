@@ -1,0 +1,247 @@
+# Phenocam Flags Configuration
+#
+# This file defines the quality flags used to mark and filter phenocam images.
+# Each flag represents a specific condition or issue that can affect image quality.
+#
+# Flag Structure:
+# Each flag is defined with:
+# - category: Type of issue (Image Quality, Weather, etc.)
+# - DwC_mapping: Darwin Core term mapping
+# - description: Detailed description of the flag
+# - value: Boolean flag state
+# - penalty_value: Impact on quality score (0-1)
+#
+# Flag Categories:
+# 1. Image Quality:
+#    - Basic image quality issues
+#    - Technical problems
+#    - Visual distortions
+#
+# 2. Illumination & Weather:
+#    - Lighting conditions
+#    - Cloud cover
+#    - Atmospheric effects
+#
+# 3. Obstructions & Environmental Features:
+#    - Physical obstructions
+#    - Environmental changes
+#    - Wildlife interference
+#
+# 4. Sensor Operation:
+#    - Camera issues
+#    - Mount problems
+#    - Technical failures
+#
+# 5. Phenology:
+#    - Vegetation state
+#    - Seasonal changes
+#    - Growth stages
+#
+# Penalty Values:
+# - 0.0: No impact on quality
+# - 0.25: Minor impact
+# - 0.5: Moderate impact
+# - 0.75: Significant impact
+# - 1.0: Critical impact (image unusable)
+#
+# Example Flag:
+# iflag_sunny:
+#   category: Illumination & Weather
+#   DwC_mapping: weatherConditions
+#   description: Clear sky with direct sunlight, ideal for observation
+#   value: False
+#   penalty_value: 0
+
+# v0.10-2025-05-13 Kexin Guo
+iflag_unusable:   # 2025-04-23
+  category: Image Quality
+  DwC_mapping: "measurementRemarks"
+  description: "Image marked as permanently unusable and should be excluded from all processing"
+  value: False
+  penalty_value: 100  # Very high penalty to ensure it's always excluded
+iflag_bluish_dominated: # v0.6-2024
+  category: Image Quality
+  DwC_mapping: "measurementRemarks"
+  description: A bluish tinge dominating the image, indicating possible color distortion.
+  value: False
+  penalty_value: 1
+iflag_sunny:
+  category: Illumination & Weather
+  DwC_mapping: "weatherConditions"
+  description: Clear sky with direct sunlight, ideal for observation.
+  value: False
+  penalty_value: 0
+iflag_cloudy:
+  category: Illumination & Weather
+  DwC_mapping: "weatherConditions"
+  description: Sky with partial cloud cover, leading to some variation in illumination and moderate light levels.
+  value: False
+  penalty_value: 0
+iflag_full_overcast:
+  category: Illumination & Weather
+  DwC_mapping: "weatherConditions"
+  description: Full cloud cover leading to uniformly low brightness levels and no direct sunlight.
+  value: False
+  penalty_value: 0
+iflag_heterogeneous_illumination:
+  category: Illumination & Weather
+  DwC_mapping: "measurementRemarks"
+  description: Varying levels of illumination in different parts of the field of view.
+  value: False
+  penalty_value: 0.5
+iflag_haze:
+  category: Illumination & Weather
+  DwC_mapping: "measurementRemarks"
+  description: Reduced visibility due to atmospheric haze, affecting image clarity.
+  value: False
+  penalty_value: 0.5
+iflag_shadows:
+  category: Illumination & Weather
+  DwC_mapping: "measurementRemarks"
+  description: Shadows obscuring parts of the field of view.
+  value: False
+  penalty_value: 0.5
+iflag_clouds:
+  category: Obstructions & Environmental Features
+  DwC_mapping: "measurementError"
+  description: Low clouds or dense cloud cover obstructing the field of view, reducing visibility and image quality.
+  value: False
+  penalty_value: 1
+iflag_fog:
+  category: Illumination & Weather
+  DwC_mapping: "weatherConditions"
+  description: Foggy conditions reducing visibility and image clarity.
+  value: False
+  penalty_value: 1
+iflag_burned:   # v0.6-2024
+  category: Environmental Damage & Changes
+  DwC_mapping: "environmentalCondition"
+  description: Burn marks or damage affecting the area in view due to environmental factors, impacting image quality.
+  value: False
+  penalty_value: 0.25 
+iflag_heavy_rain:
+  category: Adverse Weather
+  DwC_mapping: "weatherConditions"
+  description: Intense rainfall disrupting visibility and environmental conditions.
+  value: False
+  penalty_value: 1
+iflag_obstructions:
+  category: Obstructions & Environmental Features
+  DwC_mapping: "measurementError"
+  description: Any physical obstructions in the camera's field of view, reducing data quality.
+  value: False
+  penalty_value: 0.25
+iflag_lens_water_drops:
+  category: Sensor Obstruction
+  DwC_mapping: "measurementError"
+  description: Distortions caused by water droplets on the lens.
+  value: False
+  penalty_value: 1
+iflag_lens_snow:
+  category: Sensor Obstruction
+  DwC_mapping: "measurementError"
+  description: Snow or ice buildup on the lens obstructing the image quality.
+  value: False
+  penalty_value: 1
+iflag_lens_ice:
+  category: Sensor Obstruction
+  DwC_mapping: "measurementError"
+  description: Ice formations on the lens.
+  value: False
+  penalty_value: 1
+iflag_lens_dirt:
+  category: Sensor Obstruction
+  DwC_mapping: "measurementError"
+  description: Dirt accumulation on the lens affecting image clarity.
+  value: False
+  penalty_value: 1
+iflag_fallen_trees:
+  category: Obstructions & Environmental Features
+  DwC_mapping: "measurementError"
+  description: Trees fallen into the camera's field of view, obstructing observations.
+  value: False
+  penalty_value: 0.75
+iflag_high_brightness:
+  category: Illumination & Weather
+  DwC_mapping: "measurementRemarks"
+  description: Excessive brightness due to direct sunlight, affecting image quality.
+  value: False
+  penalty_value: 0.25
+iflag_low_brightness:
+  category: Illumination & Weather
+  DwC_mapping: "measurementRemarks"
+  description: Insufficient brightness leading to poor image visibility.
+  value: False
+  penalty_value: 0.25
+iflag_birds:
+  category: Obstructions & Environmental Features
+  DwC_mapping: "measurementError, associatedTaxa"
+  description: Birds obstructing the camera lens or field of view.
+  value: False
+  penalty_value: 1
+iflag_insects:
+  category: Obstructions & Environmental Features
+  DwC_mapping: "measurementError, associatedTaxa"
+  description: Insects obstructing the camera lens or field of view.
+  value: False
+  penalty_value: 1
+iflag_glare:
+  category: Image Quality
+  DwC_mapping: "measurementRemarks"
+  description: Degradation of the image due to glare from the light source.
+  value: False
+  penalty_value: 0.5
+iflag_blur:
+  category: Image Quality
+  DwC_mapping: "measurementRemarks"
+  description: Image degradation caused by motion blur.
+  value: False
+  penalty_value: 1
+iflag_mount_loose:
+  category: Sensor Operation
+  DwC_mapping: "eventRemarks"
+  description: Loose camera mount, potentially misaligning or disrupting observations.
+  value: False
+  penalty_value: 1
+iflag_camera_error:
+  category: Sensor Operation
+  DwC_mapping: "eventRemarks"
+  description: Technical issue with the camera or sensor affecting data quality.
+  value: False
+  penalty_value: 1
+iflag_wet_patches:   # v0.7-2024
+  category: Obstructions & Environmental Features
+  DwC_mapping: "habitat"
+  description: Wet areas affecting visibility or image quality in the field of view.
+  value: False
+  penalty_value: 0.75
+iflag_land_management_practice:     # v0.7-2024
+  category: Anthropogenic Effects
+  DwC_mapping: "habitat, eventRemarks"
+  description: Human activities or practices that influence the landscape and vegetation.
+  value: False
+  penalty_value: 0
+iflag_large_wildlife:  # v0.8-2025
+  category: Fauna Disturbance
+  DwC_mapping: "associatedTaxa, occurrenceRemarks"
+  description: Large animals, such as moose, disrupting the field of view.
+  value: False
+  penalty_value: 1
+iflag_small_wildlife:  # v0.8-2025
+  category: Fauna Disturbance
+  DwC_mapping: "associatedTaxa, occurrenceRemarks"
+  description: Small wildlife, such as mammals or birds, interrupting the scene.
+  value: False
+  penalty_value: 1
+sun_altitude_low_20deg:
+  category: Weather Conditions
+  DwC_mapping: "weatherConditions"
+  description: Sun's low altitude leading to reduced sunlight, common in winter or high latitudes.
+  value: False
+  penalty_value: 0.25
+iflag_other:
+  category: Other
+  DwC_mapping: "eventRemarks"
+  description: General category for flags not covered by other categories.
+  value: False
+  penalty_value: 1

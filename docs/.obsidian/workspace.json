@@ -1,0 +1,184 @@
+{
+  "main": {
+    "id": "e380648cea0a8563",
+    "type": "split",
+    "children": [
+      {
+        "id": "67542b378e8b6c53",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b5b31cb712ade762",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "workflow_evaluation.md",
+                "mode": "preview",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "workflow_evaluation"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "8806fa0b88d9f5fc",
+    "type": "split",
+    "children": [
+      {
+        "id": "97754b29b4f02098",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "53dd7488b8c584ea",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "89446709c9fea0dd",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "2165e119dc705378",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "f49f9f7399055e07",
+    "type": "split",
+    "children": [
+      {
+        "id": "9158eb8044b01a45",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6f001e0efdb381ab",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "workflow_evaluation.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for workflow_evaluation"
+            }
+          },
+          {
+            "id": "68b5f011b1d90669",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "workflow_evaluation.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from workflow_evaluation"
+            }
+          },
+          {
+            "id": "d4cda4e68576253f",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "58b331b0d4054c2c",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "workflow_evaluation.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of workflow_evaluation"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "b5b31cb712ade762",
+  "lastOpenFiles": [
+    "workflow_data_preparation.md",
+    "training_guide.md",
+    "quick_reference.md",
+    "workflow_complete_guide.md",
+    "implementation_plan.md",
+    "api_reference.md",
+    "workflow_training.md",
+    "workflow_prediction.md",
+    "workflow_overview.md",
+    "workflow_evaluation.md"
+  ]
+}

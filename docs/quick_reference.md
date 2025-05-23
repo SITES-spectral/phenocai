@@ -1,0 +1,244 @@
+# PhenoCAI Quick Reference
+
+## Common Commands
+
+### Setup
+```bash
+# Install dependencies
+uv sync
+
+# Check configuration
+uv run phenocai info
+
+# Initialize directories
+uv run phenocai config init
+```
+
+### Station Management
+```bash
+# List all stations
+uv run phenocai station list
+
+# Switch station
+uv run phenocai station switch lonnstorp
+uv run phenocai station switch robacksdalen
+
+# Get station details
+uv run phenocai station info lonnstorp
+```
+
+### Dataset Creation
+```bash
+# Create single-station dataset (auto-named)
+uv run phenocai dataset create
+# Creates: lonnstorp/experimental_data/lonnstorp_dataset_2024_splits_20_10.csv
+
+# Create with custom output path
+uv run phenocai dataset create --output custom_name.csv
+
+# Create multi-station dataset (auto-named)
+uv run phenocai dataset create-multi \
+    --stations lonnstorp robacksdalen
+# Creates: experimental_data/multi_station_lonnstorp_robacksdalen_dataset_2024_splits_20_10.csv
+
+# Get dataset information
+uv run phenocai dataset info dataset.csv
+```
+
+### Quality Analysis and Filtering
+```bash
+# Analyze quality issues
+python scripts/analyze_quality_issues.py dataset.csv
+
+# Filter dataset (auto-named output)
+uv run phenocai dataset filter input.csv \
+    --exclude-flags fog high_brightness
+# Creates: input_no_fog_high_brightness_filtered.csv
+
+# Filter with explicit output
+uv run phenocai dataset filter input.csv output.csv \
+    --min-year 2024 \
+    --rois ROI_00 ROI_01
+
+# Create clean dataset (no quality flags)
+uv run phenocai dataset filter input.csv --no-flags
+# Creates: input_clean_filtered.csv
+```
+
+### Dataset Preparation & Splitting
+```bash
+# Create dataset with automatic train/test/val splits (70/20/10 by default)
+source src/phenocai/config/env.sh
+uv run phenocai dataset create --output dataset_with_splits.csv
+
+# Custom split ratios with grouped stratification
+uv run phenocai dataset create \
+    --output dataset.csv \
+    --test-size 0.2 \
+    --val-size 0.1
+# Note: Images from the same day are kept together in the same split
+# The file_path field includes day-of-year subdirectories
+```
+
+### Model Training
+```bash
+# Quick training with MobileNetV2
+uv run phenocai train model dataset.csv --preset mobilenet_quick
+
+# Full training
+uv run phenocai train model dataset.csv --preset mobilenet_full
+
+# Custom training parameters
+uv run phenocai train model dataset.csv \
+    --model-type mobilenet \
+    --epochs 30 \
+    --batch-size 64 \
+    --learning-rate 0.001
+
+# List available presets
+uv run phenocai train list-presets
+```
+
+### Model Evaluation
+```bash
+# Evaluate on test set
+uv run phenocai evaluate model trained_models/mobilenet/final_model.h5 dataset.csv
+
+# Compare with manual annotations
+uv run phenocai evaluate compare dataset.csv predictions.json
+
+# Benchmark multiple models
+uv run phenocai evaluate benchmark --dataset-path dataset.csv
+```
+
+### Prediction/Inference (Fully Implemented)
+```bash
+# Predict single image with quality detection
+uv run phenocai predict apply model.h5 \
+    --image path/to/image.jpg
+
+# Batch process directory with heuristics
+uv run phenocai predict batch model.h5 \
+    --directory /2024/ \
+    --output-dir predictions/ \
+    --format yaml \
+    --use-heuristics
+
+# Process specific date range
+uv run phenocai predict batch model.h5 \
+    --start-day 100 \
+    --end-day 200 \
+    --year 2024 \
+    --output-dir seasonal_predictions/
+
+# Export predictions to multiple formats
+uv run phenocai predict export predictions/ \
+    --format csv \
+    --output results.csv
+# Supported formats: yaml, csv, json
+```
+
+## Quality Flags Reference
+
+### Weather Conditions
+- `fog` - Foggy conditions
+- `clouds` / `cloudy` - Cloud coverage
+- `rain` / `heavy_rain` - Precipitation
+- `snow` / `lens_snow` - Snow conditions
+- `sunny` - Bright sunny conditions
+
+### Illumination Issues
+- `high_brightness` - Overexposed areas
+- `low_brightness` - Underexposed/dark
+- `shadows` - Strong shadows present
+- `heterogeneous_illumination` - Uneven lighting
+- `glare` - Light reflection issues
+- `sun_altitude_low_20deg` - Low sun angle
+
+### Lens Problems
+- `lens_dirt` - Dirty lens
+- `lens_water_drops` - Water droplets on lens
+- `lens_ice` - Ice formation on lens
+
+### Image Quality
+- `blur` - Blurry/out of focus
+- `bluish_dominated` - Color cast issues
+- `haze` - Atmospheric haze
+- `unusable` - Generally unusable image
+
+### Other
+- `birds` - Birds in frame
+- `small_wildlife` / `large_wildlife` - Animals present
+- `land_management_practice` - Human activity
+- `wet_patches` - Wet areas visible
+
+## Dataset Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `image_filename` | str | Original image filename |
+| `file_path` | str | Full path including day subdirectory (e.g., /base/102/image.jpg) |
+| `image_id` | str | Unique image identifier |
+| `station` | str | Station name |
+| `instrument` | str | Instrument ID |
+| `year` | int | Year |
+| `day_of_year` | int | Day of year (1-365) |
+| `roi_name` | str | ROI identifier (ROI_00, ROI_01, etc.) |
+| `discard` | bool | Should ROI be discarded |
+| `snow_presence` | bool | Snow detected |
+| `flags` | str | Comma-separated quality flags |
+| `flag_count` | int | Number of flags |
+| `has_flags` | bool | Any quality issues present |
+| `split` | str | train/test/val assignment |
+| `not_needed` | bool | No annotation needed flag |
+
+### Additional Prediction Fields
+| Field | Type | Description |
+|-------|------|-------------|
+| `snow_probability` | float | Model confidence (0-1) |
+| `confidence` | float | Prediction certainty |
+| `model_predicted` | bool | Generated by model |
+| `processing_time` | float | Inference time (seconds) |
+
+## Environment Variables
+
+```bash
+export PHENOCAI_CURRENT_STATION="lonnstorp"
+export PHENOCAI_CURRENT_INSTRUMENT="LON_AGR_PL01_PHE01"
+export PHENOCAI_CURRENT_YEAR="2024"
+export PHENOCAI_LOG_LEVEL="INFO"  # or DEBUG
+```
+
+## File Paths
+
+### Lönnstorp
+- Images: `/home/jobelund/lu2024-12-46/SITES/Spectral/data/lonnstorp/phenocams/products/LON_AGR_PL01_PHE01/L1/2024/`
+- Annotations: `/home/jobelund/lu2024-12-46/SITES/Spectral/analysis/phenocams/transfer_learning/lonnstorp/master_annotation_pool/`
+
+### Röbäcksdalen
+- Images: `/home/jobelund/lu2024-12-46/SITES/Spectral/data/robacksdalen/phenocams/products/RBD_AGR_PL01_PHE01/L1/2024/`
+- Annotations: `/home/jobelund/lu2024-12-46/SITES/Spectral/analysis/phenocams/transfer_learning/robacksdalen/master_annotation_pool/`
+
+## Tips
+
+1. **Start with filtered data**: Remove fog, high_brightness, and lens_water_drops for cleaner training data
+2. **Check class balance**: Use `has_flags` to separate clean vs problematic samples
+3. **Use appropriate batch sizes**: Default is 100 for memory efficiency
+4. **Monitor splits**: Ensure train/test/val have similar distributions
+
+## Troubleshooting
+
+### Memory Issues
+- Reduce batch size in configuration
+- Process stations separately
+- Use filtered datasets
+
+### Missing Annotations
+- Check `PHENOCAI_MASTER_ANNOTATION_POOL_DIR` is set correctly
+- Verify annotation files exist for the specified year
+- Use `uv run phenocai config validate`
+
+### Configuration Problems
+- Run `source src/phenocai/config/env.sh` to load environment
+- Check with `uv run phenocai config show`
+- Validate with `uv run phenocai config validate`
