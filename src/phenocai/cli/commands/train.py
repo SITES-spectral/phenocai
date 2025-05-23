@@ -271,8 +271,8 @@ def analyze_dataset(dataset_path: str, output_file: Optional[str], sample_size: 
     click.echo(f"Total samples: {len(df)}")
     
     # Class distribution
-    if 'has_snow' in df.columns:
-        snow_count = df['has_snow'].sum()
+    if 'snow_presence' in df.columns:
+        snow_count = df['snow_presence'].sum()
         no_snow_count = len(df) - snow_count
         snow_pct = snow_count / len(df) * 100
         
@@ -335,9 +335,9 @@ def analyze_dataset(dataset_path: str, output_file: Optional[str], sample_size: 
             'total_samples': len(df),
             'columns': list(df.columns),
             'class_distribution': {
-                'snow': int(snow_count) if 'has_snow' in df.columns else None,
-                'no_snow': int(no_snow_count) if 'has_snow' in df.columns else None,
-                'balance_ratio': float(snow_pct / 100) if 'has_snow' in df.columns else None
+                'snow': int(snow_count) if 'snow_presence' in df.columns else None,
+                'no_snow': int(no_snow_count) if 'snow_presence' in df.columns else None,
+                'balance_ratio': float(snow_pct / 100) if 'snow_presence' in df.columns else None
             },
             'quality_issues': {
                 'flagged_images': int(flagged) if 'has_flags' in df.columns else None,

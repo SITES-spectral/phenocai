@@ -129,6 +129,10 @@ def full(station, instrument, year, prediction_years, model_type, preset,
         click.echo(f"6. Export results")
         return 0
     
+    # Create CliRunner at the beginning for use throughout
+    from click.testing import CliRunner
+    runner = CliRunner()
+    
     # Step 1: Dataset Creation
     click.echo(f"\n📊 Step 1: Dataset Creation")
     try:
@@ -137,10 +141,6 @@ def full(station, instrument, year, prediction_years, model_type, preset,
             click.echo(f"✓ Dataset already exists: {dataset_path}")
         else:
             click.echo(f"Creating dataset with {test_size:.0%} test, {val_size:.0%} val...")
-            
-            # Create context for dataset creation
-            from click.testing import CliRunner
-            runner = CliRunner()
             
             # Call dataset create command
             cmd_args = [

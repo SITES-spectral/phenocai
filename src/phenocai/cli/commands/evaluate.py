@@ -196,7 +196,7 @@ def compare(
     try:
         # Load ground truth
         df = pd.read_csv(dataset_path)
-        y_true = df['has_snow'].values
+        y_true = df['snow_presence'].values
         
         # Load predictions
         with open(predictions_path, 'r') as f:
