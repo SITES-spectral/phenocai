@@ -191,3 +191,42 @@ annotation_cache/
 # Performance logs
 performance_logs/
 benchmarks/
+
+# Claude Code / AI Assistant files
+.claude/
+.claude_history
+.claude_session
+.claude_cache/
+.anthropic/
+claude_workspace/
+claude_artifacts/
+.claude_artifacts/
+claude_conversation_*
+claude_session_*
+.ai_history
+.ai_session
+.ai_cache/
+
+# Claude Code temporary files
+*.claude_temp
+*.claude_backup
+.claude_temp/
+.claude_backup/
+
+# AI-generated temporary files
+ai_temp/
+ai_generated/
+.ai_temp/
+.ai_generated/
+
+# Claude Code project files
+.claude_project
+.claude_config
+claude_project.json
+claude_config.json
+
+# AI conversation logs
+conversation_*.json
+session_*.json
+ai_log_*.txt
+claude_log_*.txt
