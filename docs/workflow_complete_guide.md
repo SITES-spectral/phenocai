@@ -1,39 +1,39 @@
 # Complete PhenoCAI Workflow Guide
 
-## The Full Journey: From Photos to Knowledge 🌟
+## The Full Journey: From Photos to Knowledge
 
 This guide shows how all the pieces fit together in the PhenoCAI system.
 
 ```mermaid
 graph TB
     subgraph Input
-        A[📷 Phenocam Photos<br/>Every 3 hours]
-        B[👤 Human Labels<br/>Snow, Flags]
+        A[Phenocam Photos<br/>Every 3 hours]
+        B[Human Labels<br/>Snow, Flags]
     end
     
     subgraph Data Preparation
-        C[📊 Create Dataset]
-        D[✂️ Split Data<br/>70/10/20]
-        E[🔍 Quality Analysis]
+        C[Create Dataset]
+        D[Split Data<br/>70/10/20]
+        E[Quality Analysis]
     end
     
     subgraph Training
-        F[🧠 Neural Network<br/>MobileNetV2]
-        G[📚 Learn Patterns]
-        H[💾 Save Model]
+        F[Neural Network<br/>MobileNetV2]
+        G[Learn Patterns]
+        H[Save Model]
     end
     
     subgraph Evaluation
-        I[🎯 Test Performance]
-        J[📈 Calculate Metrics]
-        K[✅ Validate Results]
+        I[Test Performance]
+        J[Calculate Metrics]
+        K[Validate Results]
     end
     
     subgraph Production
-        L[🚀 Deploy Model]
-        M[📸 New Photos]
-        N[🏷️ Auto-Label]
-        O[📊 Research Data]
+        L[Deploy Model]
+        M[New Photos]
+        N[Auto-Label]
+        O[Research Data]
     end
     
     A --> C
@@ -60,7 +60,7 @@ graph TB
 
 ## Quick Reference: Commands for Each Stage
 
-### 1️⃣ Setup and Configuration
+### 1. Setup and Configuration
 ```bash
 # Install and configure
 uv sync
@@ -71,7 +71,7 @@ uv run phenocai info
 uv run phenocai config validate
 ```
 
-### 2️⃣ Data Preparation
+### 2. Data Preparation
 ```bash
 # Create dataset with train/test/val splits
 uv run phenocai dataset create --output data.csv \
@@ -82,6 +82,7 @@ uv run phenocai dataset create --output data.csv \
 # - file_path: Full path with day-of-year subdirectory
 # - has_flags: Boolean for quick quality filtering
 # - split: train/test/val assignment
+# - ROI_00: Full image ROI automatically included
 
 # Analyze quality
 python scripts/analyze_quality_issues.py data.csv
@@ -91,7 +92,7 @@ uv run phenocai dataset filter data.csv clean_data.csv \
     --exclude-flags fog high_brightness
 ```
 
-### 3️⃣ Training
+### 3. Training
 ```bash
 # Train model with MobileNetV2
 uv run phenocai train model clean_data.csv \
@@ -104,7 +105,7 @@ uv run phenocai train model clean_data.csv \
 # - Quality issues for discard detection
 ```
 
-### 4️⃣ Evaluation
+### 4. Evaluation
 ```bash
 # Evaluate model
 uv run phenocai evaluate model saved_model.h5 test_data.csv \
@@ -117,7 +118,7 @@ uv run phenocai evaluate model saved_model.h5 test_data.csv \
 # - Performance by quality condition
 ```
 
-### 5️⃣ Prediction
+### 5. Prediction
 ```bash
 # Predict single image
 uv run phenocai predict apply saved_model.h5 \
@@ -142,7 +143,7 @@ uv run phenocai predict export predictions/ \
     --output results.csv
 ```
 
-## Key Decision Points 🤔
+## Key Decision Points
 
 ### 1. Data Quality Decisions
 
@@ -244,7 +245,7 @@ uv run phenocai predict export predictions/2024/ \
 ```yaml
 # Example prediction output (predictions/2024/102/predictions.yaml)
 lonnstorp_LON_AGR_PL01_PHE01_2024_102_20240411_080003.jpg:
-  - roi_name: ROI_00
+  - roi_name: ROI_00  # Full image ROI (always included)
     snow_presence: false
     snow_probability: 0.12
     confidence: 0.88
@@ -252,7 +253,7 @@ lonnstorp_LON_AGR_PL01_PHE01_2024_102_20240411_080003.jpg:
     discard: false
     has_flags: false
     
-  - roi_name: ROI_01
+  - roi_name: ROI_01  # Station-specific ROI
     snow_presence: true
     snow_probability: 0.95
     confidence: 0.95
@@ -299,6 +300,66 @@ graph LR
 
 ```mermaid
 graph TD
+    A[All Data] --> B[Clear Days Model]
+    A --> C[Foggy Days Model]
+    A --> D[Bright Days Model]
+    
+    E[New Image] --> F{Classify Condition}
+    F --> B
+    F --> C
+    F --> D
+```
+
+**Best for**: Maximum accuracy for specific conditions
+
+### Workflow D: Cross-Station Evaluation
+
+```mermaid
+graph LR
+    A[Train on<br/>Station A] --> B[Model]
+    B --> C[Test on<br/>Station B]
+    C --> D[Measure<br/>Generalization]
+    
+    style A fill:#e3f2fd
+    style C fill:#fff3e0
+    style D fill:#e8f5e9
+```
+
+**Best for**: Testing model robustness across locations
+
+```bash
+# Cross-station evaluation commands
+uv run phenocai cross-station evaluate saved_model.h5 \
+    --train-station lonnstorp \
+    --test-station robacksdalen
+
+# Analyze cross-station performance
+uv run phenocai cross-station analyze results/ \
+    --metric accuracy \
+    --plot-confusion
+```
+
+**See**: [Cross-Station Evaluation Guide](cross_station_evaluation.md)
+
+### Workflow E: Annotation Generation
+
+```mermaid
+graph LR
+    A[Trained Model] --> B[Predict New Years]
+    B --> C[Add Heuristics]
+    C --> D[Filter by Confidence]
+    D --> E[Enhanced Dataset]
+    
+    style A fill:#e3f2fd
+    style C fill:#fff9c4
+    style E fill:#c8e6c9
+```
+
+**Best for**: Expanding datasets to new years
+**See**: [Annotation Generation Workflow](workflow_annotation_generation.md)
+
+```mermaid
+graph TD
     A[All Data] --> B[Group by Condition]
     B --> C[Clear Weather<br/>Model]
     B --> D[Fog<br/>Model]
@@ -316,7 +377,7 @@ graph TD
 
 **Best for**: Maximum accuracy across all conditions
 
-## Performance Expectations 📊
+## Performance Expectations
 
 ### By Data Quality
 
@@ -350,7 +411,7 @@ graph LR
     style H fill:#4caf50,color:#fff
 ```
 
-## Troubleshooting Guide 🔧
+## Troubleshooting Guide
 
 ```mermaid
 graph TD
@@ -378,27 +439,27 @@ graph TD
     style L fill:#4caf50,color:#fff
 ```
 
-## Tips for Success 🎯
+## Tips for Success
 
 ### 1. Start Simple
-- ✅ Use filtered dataset first
-- ✅ Train basic model
-- ✅ Get baseline results
-- ✅ Then add complexity
+- Use filtered dataset first
+- Train basic model
+- Get baseline results
+- Then add complexity
 
 ### 2. Monitor Everything
-- 📊 Track accuracy over time
-- 📈 Log confidence scores
-- 🔍 Review random samples
-- 📝 Document changes
+- Track accuracy over time
+- Log confidence scores
+- Review random samples
+- Document changes
 
 ### 3. Iterate Frequently
-- 🔄 Small improvements
-- 🧪 Test each change
-- 📊 Measure impact
-- 🎯 Keep what works
+- Small improvements
+- Test each change
+- Measure impact
+- Keep what works
 
-## The Big Picture 🌍
+## The Big Picture
 
 ```mermaid
 graph TD
@@ -414,13 +475,13 @@ graph TD
     style G fill:#ffd700
 ```
 
-## Remember: You're Part of Something Important! 🌟
+## Remember: You're Part of Something Important!
 
 Every photo labeled, every model trained, and every prediction made contributes to:
-- 🌡️ Understanding climate change
-- 🌱 Monitoring ecosystem health
-- 📊 Providing data for research
-- 🌍 Protecting our environment
+- Understanding climate change
+- Monitoring ecosystem health
+- Providing data for research
+- Protecting our environment
 
 ## Next Steps
 
@@ -431,9 +492,9 @@ Every photo labeled, every model trained, and every prediction made contributes 
 
 ## Need Help?
 
-- 📖 Review individual workflow guides
-- 💬 Ask the development team
-- 🐛 Report issues on GitHub
-- 📚 Check the documentation
+- Review individual workflow guides
+- Ask the development team
+- Report issues on GitHub
+- Check the documentation
 
-Good luck with your PhenoCAI journey! 🚀
+Good luck with your PhenoCAI journey!

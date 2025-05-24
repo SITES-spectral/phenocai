@@ -12,6 +12,9 @@ uv run phenocai info
 
 # Initialize directories
 uv run phenocai config init
+
+# Add ROI_00 to all stations (one-time setup)
+uv run phenocai config add-roi-00
 ```
 
 ### Station Management
@@ -45,6 +48,13 @@ uv run phenocai dataset create --instrument LON_AGR_PL01_PHE02
 
 # Create with custom output path
 uv run phenocai dataset create --output custom_name.csv
+
+# Create dataset with only ROI_00 (for cross-station work)
+uv run phenocai dataset create --roi-filter ROI_00
+# Creates: lonnstorp_PHE01_dataset_2024_roi_00_splits_20_10.csv
+
+# Create dataset with all images (no ROI completeness filtering)
+uv run phenocai dataset create --no-complete-rois-only
 
 # Create multi-station dataset (auto-named)
 uv run phenocai dataset create-multi \
@@ -109,7 +119,7 @@ uv run phenocai train model dataset.csv \
 uv run phenocai train list-presets
 ```
 
-### Complete Pipeline (NEW!)
+### Complete Pipeline
 ```bash
 # Run entire pipeline: dataset → training → evaluation → prediction
 uv run phenocai pipeline full
@@ -132,6 +142,23 @@ uv run phenocai pipeline status --station lonnstorp
 uv run phenocai pipeline full --dry-run
 ```
 
+### Cross-Station Pipeline
+```bash
+# Train on Lönnstorp, evaluate on Röbäcksdalen using ROI_00
+uv run phenocai cross-station pipeline \
+    --train-stations lonnstorp \
+    --eval-stations robacksdalen \
+    --years 2023 2024 \
+    --roi-filter ROI_00
+
+# Multi-station training and evaluation
+uv run phenocai cross-station pipeline \
+    --train-stations lonnstorp robacksdalen \
+    --eval-stations abisko grimso \
+    --annotation-years 2022 2023 2024 2025 \
+    --use-heuristics
+```
+
 ### Model Evaluation
 ```bash
 # Evaluate on test set
@@ -144,7 +171,7 @@ uv run phenocai evaluate compare dataset.csv predictions.json
 uv run phenocai evaluate benchmark --dataset-path dataset.csv
 ```
 
-### Prediction/Inference (Fully Implemented)
+### Prediction/Inference
 ```bash
 # Predict single image with quality detection
 uv run phenocai predict apply model.h5 \
@@ -169,6 +196,26 @@ uv run phenocai predict export predictions/ \
     --format csv \
     --output results.csv
 # Supported formats: yaml, csv, json
+```
+
+### ROI_00 Configuration
+```bash
+# Add ROI_00 to all primary stations
+uv run phenocai config add-roi-00
+
+# Add ROI_00 with specific sample image
+uv run phenocai config add-roi-00 \
+    --sample-image /path/to/sample.jpg
+
+# Add ROI_00 to specific instrument
+uv run phenocai config add-roi-00 \
+    --station lonnstorp \
+    --instrument LON_AGR_PL01_PHE01 \
+    --force
+
+# Choose horizon detection method
+uv run phenocai config add-roi-00 \
+    --method gradient  # or 'color', 'fixed'
 ```
 
 ## Quality Flags Reference
@@ -224,6 +271,12 @@ uv run phenocai predict export predictions/ \
 | `has_flags` | bool | Any quality issues present |
 | `split` | str | train/test/val assignment |
 | `not_needed` | bool | No annotation needed flag |
+
+### ROI_00 Special Properties
+- **Definition**: Full image excluding sky region
+- **Calculation**: Automatic using HSV-based sky detection
+- **Storage**: Pre-calculated in stations.yaml for efficiency
+- **Use case**: Cross-station model compatibility
 
 ### Additional Prediction Fields
 | Field | Type | Description |
@@ -292,6 +345,8 @@ export PHENOCAI_LOG_LEVEL="INFO"  # or DEBUG
 2. **Check class balance**: Use `has_flags` to separate clean vs problematic samples
 3. **Use appropriate batch sizes**: Default is 100 for memory efficiency
 4. **Monitor splits**: Ensure train/test/val have similar distributions
+5. **Use ROI_00 for cross-station work**: Provides consistent view across different camera angles
+6. **Configure ROI_00 once**: Run `uv run phenocai config add-roi-00` for automatic sky exclusion
 
 ## Troubleshooting
 

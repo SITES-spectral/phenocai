@@ -451,6 +451,78 @@ def add_train_test_split(
     return df
 
 
+def filter_complete_roi_sets(
+    df: pd.DataFrame,
+    expected_rois: Optional[List[str]] = None,
+    min_day_of_year: Optional[int] = None
+) -> pd.DataFrame:
+    """
+    Filter dataset to only include images with complete ROI sets.
+    
+    This is important for consistent model training, as some images may have
+    been annotated with only a subset of ROIs during the early annotation phase.
+    
+    Args:
+        df: Input dataframe
+        expected_rois: List of expected ROI names. If None, will determine from data.
+        min_day_of_year: Minimum day of year to include. If None, will filter by ROI completeness.
+        
+    Returns:
+        Filtered dataframe with only complete ROI sets
+    """
+    df = df.copy()
+    
+    # Option 1: Filter by day of year (simpler and faster)
+    if min_day_of_year is not None:
+        initial_count = len(df)
+        df_filtered = df[df['day_of_year'].astype(int) >= min_day_of_year]
+        filtered_count = len(df_filtered)
+        
+        logger.info(
+            f"Filtered to images from day {min_day_of_year} onwards: "
+            f"{initial_count} → {filtered_count} records "
+            f"({filtered_count/initial_count*100:.1f}% retained)"
+        )
+        return df_filtered
+    
+    # Option 2: Filter by ROI completeness
+    if expected_rois is None:
+        # Determine expected ROIs from the most complete annotations
+        roi_counts = df.groupby('image_filename')['roi_name'].apply(set).apply(len)
+        max_roi_count = roi_counts.max()
+        complete_images = roi_counts[roi_counts == max_roi_count].index
+        expected_rois = df[df['image_filename'].isin(complete_images)]['roi_name'].unique()
+        logger.info(f"Detected expected ROIs: {sorted(expected_rois)}")
+    
+    expected_rois_set = set(expected_rois)
+    
+    # Find images with complete ROI sets
+    complete_images = df.groupby('image_filename').apply(
+        lambda x: set(x['roi_name']) == expected_rois_set
+    )
+    complete_image_files = complete_images[complete_images].index
+    
+    # Filter dataframe
+    initial_count = len(df)
+    df_filtered = df[df['image_filename'].isin(complete_image_files)]
+    filtered_count = len(df_filtered)
+    
+    # Log statistics
+    logger.info(
+        f"Filtered to images with complete ROI sets ({expected_rois_set}): "
+        f"{initial_count} → {filtered_count} records "
+        f"({filtered_count/initial_count*100:.1f}% retained)"
+    )
+    
+    # Show ROI distribution after filtering
+    roi_dist = df_filtered['roi_name'].value_counts().sort_index()
+    logger.info("ROI distribution after filtering:")
+    for roi, count in roi_dist.items():
+        logger.info(f"  {roi}: {count}")
+    
+    return df_filtered
+
+
 if __name__ == "__main__":
     # Test dataset creation
     print("Testing dataset builder...")

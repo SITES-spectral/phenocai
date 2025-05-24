@@ -5,6 +5,62 @@ All notable changes to the PhenoCAI project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2025-05-24
+
+### Added
+
+#### ROI_00 Automatic Calculation and Management
+- **Sky Detection Algorithm**: Advanced HSV-based sky detection matching phenotag/phenocams implementation
+- **Automatic Horizon Detection**: Three methods available - gradient, color, and fixed
+- **Pre-calculated Storage**: ROI_00 definitions stored in stations.yaml for performance
+- **CLI Configuration Command**: `phenocai config add-roi-00` with options for specific stations/instruments
+- **Polygon Serialization**: Functions for converting between YAML-friendly and processing formats
+- **Memory-Efficient Processing**: Chunk-based image analysis for large images
+
+#### Cross-Station Training and Evaluation
+- **Universal ROI_00**: Enables training on one station and evaluating on others
+- **Multi-Station Datasets**: Create datasets combining multiple stations with ROI_00 filtering
+- **Cross-Station Pipeline**: Complete automation for training and evaluation across stations
+- **Station-Specific Models**: Generate models for each station automatically
+- **Performance Tracking**: Monitor cross-station generalization metrics
+
+#### Enhanced Dataset Features
+- **ROI Completeness Filtering**: Option to include only images with all ROIs annotated
+- **ROI-Specific Datasets**: Create datasets with only specific ROIs using `--roi-filter`
+- **Improved Dataset Statistics**: Better handling of imbalanced ROI annotations over time
+- **Filtering Impact Reporting**: Shows data retention statistics after filtering
+
+#### Annotation Generation System
+- **ML-Based Generation**: Create annotations using trained models for unannotated data
+- **Heuristic Integration**: Combine ML predictions with rule-based quality checks
+- **Confidence Filtering**: Set thresholds for annotation quality
+- **Multi-Year Processing**: Generate annotations for multiple years automatically
+
+### Enhanced
+
+#### Configuration System
+- **Station Registry Enhancement**: Better validation and error messages
+- **ROI_00 Integration**: Seamless integration with existing ROI systems
+- **Dynamic Updates**: Station configurations update automatically when ROI_00 is added
+
+#### Documentation
+- **Professional Formatting**: Removed all emoji icons for cleaner, more professional documentation
+- **ROI_00 Documentation**: Added comprehensive explanations across all documentation files
+- **Cross-Station Guides**: New documentation for cross-station workflows
+- **API Reference Updates**: Added ROI calculator functions and CLI commands
+
+### Fixed
+
+#### Column Name Issues
+- **Fixed 'has_snow' Error**: Corrected all references to use 'snow_presence' column name
+- **NumPy Type Serialization**: Fixed JSON serialization issues with NumPy data types
+- **Model Saving**: Changed to weights-only saving to avoid pickle errors
+
+#### ROI_00 Calculation
+- **Type Conversion**: Fixed numpy int64 to Python int conversion for YAML compatibility
+- **Memory Management**: Added garbage collection for chunk processing
+- **Configuration Updates**: Fixed in-place updates to preserve all ROI_00 additions
+
 ## [0.2.0] - 2025-05-23
 
 ### Added

@@ -17,10 +17,12 @@ dependencies = [
     "pandas>=2.2.3",
     "pillow>=11.2.1",
     "polars>=1.30.0",
+    "pydot>=4.0.0",
     "pyyaml>=6.0.2",
     "scikit-learn>=1.6.1",
     "seaborn>=0.13.2",
     "tensorflow>=2.19.0",
+    "tqdm>=4.67.1",
 ]
 
 [project.scripts]

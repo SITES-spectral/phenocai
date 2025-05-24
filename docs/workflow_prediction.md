@@ -6,10 +6,10 @@ Now that we have a trained and tested model, it's time to put it to work! This i
 
 ```mermaid
 graph TD
-    A[📸 New Photos] --> B[🧠 Trained Model]
-    B --> C[🏷️ Predictions]
-    C --> D[💾 Save Results]
-    D --> E[📊 Scientists Use Data]
+    A[New Photos] --> B[Trained Model]
+    B --> C[Predictions]
+    C --> D[Save Results]
+    D --> E[Scientists Use Data]
     
     style A fill:#e3f2fd
     style B fill:#f3e5f5
@@ -18,13 +18,13 @@ graph TD
     style E fill:#4caf50,color:#fff
 ```
 
-## The Prediction Pipeline 🚀
+## The Prediction Pipeline
 
 ### Step 1: Collect New Photos
 
 ```mermaid
 graph LR
-    A[Camera] --> B[Today's Photos<br/>📸📸📸]
+    A[Camera] --> B[Today's Photos]
     B --> C[No Labels Yet]
     C --> D[Ready for<br/>Prediction]
     
@@ -41,7 +41,7 @@ These photos are completely new - taken after the model was trained.
 ```mermaid
 graph TD
     A[Saved Model File<br/>model.h5] --> B[Load into Memory]
-    B --> C[Model Ready<br/>🧠]
+    B --> C[Model Ready]
     C --> D[Contains All<br/>Learned Knowledge]
     
     style A fill:#81c784
@@ -79,14 +79,14 @@ graph LR
     A[ROI Image] --> B[Model]
     B --> C[Snow: 85%<br/>No Snow: 15%]
     C --> D{Threshold<br/>Check}
-    D -->|>50%| E[Prediction:<br/>Snow Present ✅]
+    D -->|>50%| E[Prediction:<br/>Snow Present]
     
     style B fill:#f3e5f5
     style C fill:#fff9c4
     style E fill:#4caf50,color:#fff
 ```
 
-## Batch Processing for Efficiency 📦
+## Batch Processing for Efficiency
 
 Instead of one image at a time, we process in batches:
 
@@ -109,26 +109,26 @@ graph TD
 ```
 
 **Why Batches?**
-- 🚀 Much faster than one-by-one
-- 💾 Better memory usage
-- ⚡ GPU processes multiple images at once
+- Much faster than one-by-one
+- Better memory usage
+- GPU processes multiple images at once
 
-## Confidence Scores 📊
+## Confidence Scores
 
 The model doesn't just say "yes" or "no" - it gives confidence levels:
 
 ```mermaid
 graph TD
     subgraph High Confidence
-        A[Clear Snow] --> B[Snow: 95% ✅]
+        A[Clear Snow] --> B[Snow: 95%]
     end
     
     subgraph Medium Confidence
-        C[Light Snow] --> D[Snow: 72% 🤔]
+        C[Light Snow] --> D[Snow: 72%]
     end
     
     subgraph Low Confidence
-        E[Ambiguous] --> F[Snow: 53% ❓]
+        E[Ambiguous] --> F[Snow: 53%]
     end
     
     style B fill:#4caf50,color:#fff
@@ -141,16 +141,16 @@ graph TD
 ```mermaid
 graph TD
     A[Confidence Score] --> B{Threshold}
-    B -->|>80%| C[High Confidence<br/>Auto-label ✅]
-    B -->|50-80%| D[Medium Confidence<br/>Flag for Review ⚠️]
-    B -->|<50%| E[Low Confidence<br/>Human Check ❓]
+    B -->|>80%| C[High Confidence<br/>Auto-label]
+    B -->|50-80%| D[Medium Confidence<br/>Flag for Review]
+    B -->|<50%| E[Low Confidence<br/>Human Check]
     
     style C fill:#4caf50,color:#fff
     style D fill:#ffc107
     style E fill:#f44336,color:#fff
 ```
 
-## Handling Quality Issues 🚩
+## Handling Quality Issues
 
 PhenoCAI automatically detects and handles problematic images:
 
@@ -180,12 +180,12 @@ Some ROIs are automatically marked for discard:
 ```mermaid
 graph TD
     A[ROI Quality Check] --> B{Discard Criteria}
-    B -->|Unusable| C[✅ Discard]
+    B -->|Unusable| C[Discard]
     B -->|Too Dark| C
     B -->|Too Bright| C
     B -->|Severe Blur| C
     B -->|Lens Obstruction| C
-    B -->|Otherwise| D[❌ Keep]
+    B -->|Otherwise| D[Keep]
     
     style C fill:#f44336,color:#fff
     style D fill:#4caf50,color:#fff
@@ -202,7 +202,7 @@ PhenoCAI detects 20+ quality issues:
 | **Lighting** | high_brightness, low_brightness, shadows, glare | Affects visibility |
 | **Other** | heterogeneous_illumination, sun_altitude_low | Special handling |
 
-## Output Formats 💾
+## Output Formats
 
 ### Individual Annotation Files
 
@@ -246,7 +246,7 @@ graph TD
     style C fill:#e8f5e9
 ```
 
-## Real-Time vs Batch Processing ⏰
+## Real-Time vs Batch Processing
 
 ```mermaid
 graph TD
@@ -268,7 +268,7 @@ graph TD
 - **Real-Time**: Urgent monitoring, alerts
 - **Batch**: Daily processing, research analysis
 
-## Quality Control in Production 🔍
+## Quality Control in Production
 
 ### Monitoring Model Performance
 
@@ -277,8 +277,8 @@ graph TD
     A[Predictions] --> B[Random Sample<br/>10%]
     B --> C[Human Review]
     C --> D{Accurate?}
-    D -->|Yes| E[Continue ✅]
-    D -->|No| F[Investigate ⚠️]
+    D -->|Yes| E[Continue]
+    D -->|No| F[Investigate]
     
     F --> G[Retrain if Needed]
     
@@ -302,11 +302,11 @@ graph LR
 ```
 
 **Causes of drift:**
-- 📷 Camera gets dirty
-- 🌍 Seasonal changes
-- 🔧 Camera adjustments
+- Camera gets dirty
+- Seasonal changes
+- Camera adjustments
 
-## Prediction Commands (Fully Implemented) ✅
+## Prediction Commands (Fully Implemented)
 
 The prediction system is now fully operational with quality-aware predictions and batch processing capabilities.
 
@@ -346,7 +346,7 @@ The system includes:
 - Efficient batch processing with progress tracking
 - Support for processing entire years of phenocam data
 
-## Integration with Research Workflow 🔬
+## Integration with Research Workflow
 
 ```mermaid
 graph TD
@@ -363,7 +363,7 @@ graph TD
     style E fill:#ffd700
 ```
 
-## Best Practices 📝
+## Best Practices
 
 ### 1. Version Control
 
@@ -399,7 +399,7 @@ graph TD
     style F fill:#ffccbc
 ```
 
-## Troubleshooting Common Issues 🔧
+## Troubleshooting Common Issues
 
 ### Issue: Slow Predictions
 - **Solution**: Increase batch size
@@ -416,16 +416,16 @@ graph TD
 - **Solution**: Check for camera changes
 - **Solution**: Validate preprocessing
 
-## Success Metrics 🎯
+## Success Metrics
 
 Your prediction system is working well when:
 
 ```mermaid
 graph TD
-    A[Success Indicators] --> B[✅ Processes 1000s<br/>of images daily]
-    A --> C[✅ >85% accuracy<br/>on spot checks]
-    A --> D[✅ Consistent<br/>performance]
-    A --> E[✅ Useful for<br/>research]
+    A[Success Indicators] --> B[Processes 1000s<br/>of images daily]
+    A --> C[>85% accuracy<br/>on spot checks]
+    A --> D[Consistent<br/>performance]
+    A --> E[Useful for<br/>research]
     
     style B fill:#4caf50,color:#fff
     style C fill:#4caf50,color:#fff
@@ -433,20 +433,20 @@ graph TD
     style E fill:#4caf50,color:#fff
 ```
 
-## Summary: From Photos to Science 🌟
+## Summary: From Photos to Science
 
 ```mermaid
 graph LR
-    A[📸 Photos] --> B[🤖 PhenoCAI]
-    B --> C[📊 Data]
-    C --> D[🔬 Research]
-    D --> E[🌍 Understanding<br/>Climate Change]
+    A[Photos] --> B[PhenoCAI]
+    B --> C[Data]
+    C --> D[Research]
+    D --> E[Understanding<br/>Climate Change]
     
     style B fill:#9c27b0,color:#fff
     style E fill:#4caf50,color:#fff
 ```
 
-## Checklist for Production Use ✅
+## Checklist for Production Use
 
 - [ ] Model tested and validated
 - [ ] Batch processing configured
@@ -457,7 +457,7 @@ graph LR
 - [ ] Performance monitoring
 - [ ] Backup and recovery plan
 
-## Congratulations! 🎉
+## Congratulations!
 
 You now understand the complete PhenoCAI workflow:
 1. **Prepare** → Organize and label data

@@ -11,7 +11,12 @@ source src/phenocai/config/env.sh
 uv sync
 ```
 
-2. Verify your current station and instrument:
+2. Configure ROI_00 for cross-station compatibility:
+```bash
+uv run phenocai config add-roi-00
+```
+
+3. Verify your current station and instrument:
 ```bash
 uv run phenocai info
 
@@ -34,6 +39,10 @@ uv run phenocai dataset create
 # Create dataset for specific instrument
 uv run phenocai dataset create --instrument LON_AGR_PL01_PHE02
 # Creates: lonnstorp_PHE02_dataset_2024_splits_20_10.csv
+
+# Create dataset with only ROI_00 (for cross-station work)
+uv run phenocai dataset create --roi-filter ROI_00
+# Creates: lonnstorp_PHE01_dataset_2024_roi_00_splits_20_10.csv
 
 # Create with custom name
 uv run phenocai dataset create --output lonnstorp_dataset.csv
@@ -114,25 +123,27 @@ The training process will:
 
 ## Current Status
 
-### ✅ Completed:
-- Dataset creation and management
+### Completed:
+- Dataset creation and management with ROI_00 support
 - Train/test/validation splitting with grouped stratification
 - Heuristic methods for snow detection and quality assessment
-- CLI infrastructure
-- Multi-station support
-- Model architectures (MobileNetV2, Simple CNN)
+- CLI infrastructure with dynamic instrument validation
+- Multi-station support with cross-station capabilities
+- Model architectures (MobileNetV2, Custom CNN)
 - Complete training pipeline with TensorFlow
 - Data augmentation strategies
 - Evaluation metrics and visualization
 - Full inference/prediction pipeline
 - Batch processing for directories and date ranges
 - Multi-format export (YAML, CSV, JSON)
+- ROI_00 automatic calculation and storage
+- Cross-station training and evaluation
 
-### 🚧 In Progress:
+### In Progress:
 - Performance optimization
 - Additional model architectures
 
-### 📋 TODO:
+### TODO:
 - Real-time prediction API
 - Model versioning system
 - Distributed training support
@@ -195,6 +206,34 @@ uv run phenocai train model multi_station_dataset.csv \
     --epochs 30 \
     --batch-size 32
 ```
+
+## Cross-Station Training with ROI_00
+
+ROI_00 enables training on one station and applying to others:
+
+```bash
+# Train on Lönnstorp with ROI_00 only
+uv run phenocai dataset create --roi-filter ROI_00
+uv run phenocai train model lonnstorp_roi_00_dataset.csv --preset mobilenet_full
+
+# Switch to Röbäcksdalen and evaluate
+uv run phenocai station switch robacksdalen
+uv run phenocai dataset create --roi-filter ROI_00
+uv run phenocai evaluate model /path/to/model.h5 robacksdalen_roi_00_dataset.csv
+
+# Use the cross-station pipeline for automation
+uv run phenocai cross-station pipeline \
+    --train-stations lonnstorp \
+    --eval-stations robacksdalen abisko \
+    --roi-filter ROI_00
+```
+
+### Why ROI_00 for Cross-Station Work?
+
+- **Universal Coverage**: ROI_00 represents the full image minus sky
+- **Automatic Calculation**: Sky exclusion using advanced HSV detection
+- **Pre-calculated**: Stored in stations.yaml for performance
+- **Consistent View**: Same perspective across different camera angles
 
 ## Step 4: Evaluate Your Model
 

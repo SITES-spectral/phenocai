@@ -24,7 +24,9 @@ def create_multi_station_dataset(
     include_unannotated: bool = False,
     test_size: float = 0.2,
     val_size: float = 0.1,
-    balance_stations: bool = True
+    balance_stations: bool = True,
+    roi_filter: Optional[List[str]] = None,
+    years: Optional[List[str]] = None
 ) -> Tuple[pd.DataFrame, Dict[str, DatasetStats]]:
     """
     Create a combined dataset from multiple stations.
@@ -37,6 +39,8 @@ def create_multi_station_dataset(
         test_size: Fraction for test set
         val_size: Fraction for validation set
         balance_stations: Whether to balance samples across stations
+        roi_filter: List of ROI names to include (e.g., ['ROI_00'])
+        years: List of years to include (defaults to current year)
         
     Returns:
         Tuple of (combined dataframe, dict of stats per station)
@@ -80,10 +84,24 @@ def create_multi_station_dataset(
             df['station_full_name'] = station_config['full_name']
             df['station_code'] = station_config['station_code']
             
-            station_dfs.append(df)
-            station_stats[station] = stats
+            # Apply ROI filter if specified
+            if roi_filter:
+                initial_count = len(df)
+                df = df[df['roi_name'].isin(roi_filter)]
+                logger.info(f"Filtered to ROIs {roi_filter}: {initial_count} → {len(df)} records")
             
-            logger.info(f"Loaded {len(df)} records from {station}")
+            # Apply year filter if specified
+            if years:
+                initial_count = len(df)
+                df = df[df['year'].astype(str).isin([str(y) for y in years])]
+                logger.info(f"Filtered to years {years}: {initial_count} → {len(df)} records")
+            
+            if len(df) > 0:
+                station_dfs.append(df)
+                station_stats[station] = stats
+                logger.info(f"Loaded {len(df)} records from {station}")
+            else:
+                logger.warning(f"No records remaining after filters for {station}")
             
         except Exception as e:
             logger.error(f"Error processing {station}: {e}")

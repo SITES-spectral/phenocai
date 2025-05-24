@@ -1,4 +1,4 @@
-# PhenoCAI Workflow Overview: A Beginner's Guide
+# PhenoCAI Workflow Overview
 
 ## What is PhenoCAI?
 
@@ -13,10 +13,10 @@ This document explains how PhenoCAI works, step by step, using simple language a
 
 ```mermaid
 graph TD
-    A[📷 Camera Takes Photos] --> B[🏷️ Humans Label Some Photos]
-    B --> C[🤖 Computer Learns Patterns]
-    C --> D[🔍 Computer Labels New Photos]
-    D --> E[📊 Scientists Use Results]
+    A[Camera Takes Photos] --> B[Humans Label Some Photos]
+    B --> C[Computer Learns Patterns]
+    C --> D[Computer Labels New Photos]
+    D --> E[Scientists Use Results]
     
     style A fill:#e1f5fe
     style B fill:#fff3e0
@@ -47,10 +47,10 @@ Instead of looking at the whole photo, we often focus on specific parts:
 
 ```mermaid
 graph TD
-    A[Full Image 📷] --> B[ROI_00: Whole Image]
-    A --> C[ROI_01: Sky Area]
-    A --> D[ROI_02: Ground Area]
-    A --> E[ROI_03: Tree Area]
+    A[Full Image] --> B[ROI_00: Full Image minus Sky]
+    A --> C[ROI_01: Field Area]
+    A --> D[ROI_02: Forest Edge]
+    A --> E[ROI_03: Specific Crop Area]
     
     style A fill:#e3f2fd
     style B fill:#f5f5f5
@@ -59,6 +59,8 @@ graph TD
     style E fill:#81c784
 ```
 
+**Special Note about ROI_00**: ROI_00 is automatically calculated to exclude the sky region using advanced color detection algorithms. This makes it ideal for cross-station comparisons since it provides a consistent view of the ground/vegetation across different camera angles and locations.
+
 ### 3. What are Quality Flags?
 
 Quality flags are like warning labels on photos:
@@ -66,12 +68,12 @@ Quality flags are like warning labels on photos:
 ```mermaid
 graph LR
     A[Photo] --> B{Quality Check}
-    B -->|Good| C[✅ Clean Image]
-    B -->|Issues| D[⚠️ Has Flags]
-    D --> E[🌫️ Fog]
-    D --> F[☀️ Too Bright]
-    D --> G[💧 Water Drops]
-    D --> H[📷 Blurry]
+    B -->|Good| C[Clean Image]
+    B -->|Issues| D[Has Flags]
+    D --> E[Fog]
+    D --> F[Too Bright]
+    D --> G[Water Drops]
+    D --> H[Blurry]
     
     style C fill:#c8e6c9
     style D fill:#ffecb3
@@ -87,15 +89,15 @@ PhenoCAI works with cameras at different research stations across Sweden:
 
 ```mermaid
 graph TD
-    A[🏢 Research Stations] --> B[🌾 Lönnstorp<br/>Agricultural]
-    A --> C[🌲 Röbäcksdalen<br/>Agricultural]
-    A --> D[🏔️ Abisko<br/>Subarctic]
+    A[Research Stations] --> B[Lönnstorp<br/>Agricultural]
+    A --> C[Röbäcksdalen<br/>Agricultural]
+    A --> D[Abisko<br/>Subarctic]
     
-    B --> E[📷 PHE01<br/>Main Camera]
-    B --> F[📷 PHE02<br/>Secondary Camera]
+    B --> E[PHE01<br/>Main Camera]
+    B --> F[PHE02<br/>Secondary Camera]
     
-    C --> G[📷 PHE01<br/>Agricultural View]
-    C --> H[📷 FOR01<br/>Forest View]
+    C --> G[PHE01<br/>Agricultural View]
+    C --> H[FOR01<br/>Forest View]
     
     style A fill:#e3f2fd
     style B fill:#fff3e0
@@ -115,13 +117,13 @@ Each station can have multiple cameras (instruments) looking at different areas,
 
 ## The Three Main Stages
 
-### Stage 1: Prepare the Data 📚
+### Stage 1: Prepare the Data
 We organize our photos and labels so the computer can learn from them.
 
-### Stage 2: Train the Model 🎓
+### Stage 2: Train the Model
 The computer studies the labeled photos to learn patterns.
 
-### Stage 3: Use the Model 🚀
+### Stage 3: Use the Model
 The trained model can now label new photos automatically.
 
 ## Why Do We Need This?
@@ -132,6 +134,15 @@ Scientists use cameras to watch how nature changes through the seasons. But with
 2. **Being Consistent**: Always using the same rules
 3. **Finding Patterns**: Spotting changes humans might miss
 4. **Working 24/7**: Processing photos day and night
+5. **Cross-Station Analysis**: Compare data across different locations using ROI_00
+
+## Cross-Station Capabilities
+
+PhenoCAI now supports training models at one station and applying them to others. This is made possible through:
+
+- **ROI_00 Standardization**: Automatically calculated region that excludes sky, providing consistent views across stations
+- **Station Configuration**: Pre-calculated ROI_00 definitions stored in stations.yaml for efficiency
+- **Universal Models**: Train once, apply everywhere using ROI_00 filtering
 
 ## Next Steps
 

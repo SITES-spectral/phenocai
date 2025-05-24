@@ -114,3 +114,58 @@ def init():
     except Exception as e:
         click.echo(f"Error during initialization: {e}", err=True)
         return 1
+
+
+@config_cmd.command()
+@click.option('--sample-image', type=click.Path(exists=True),
+              help='Sample image to calculate ROI_00 from')
+@click.option('--station', help='Specific station to update')
+@click.option('--instrument', help='Specific instrument to update')
+@click.option('--method', type=click.Choice(['gradient', 'color', 'fixed']),
+              default='gradient', help='Horizon detection method')
+@click.option('--force', is_flag=True, help='Force recalculation even if ROI_00 exists')
+def add_roi_00(sample_image, station, instrument, method, force):
+    """Add ROI_00 (full image minus sky) to stations.yaml."""
+    from ...roi_calculator import add_roi_00_to_station_config, update_all_stations_roi_00
+    
+    stations_yaml_path = Path(config.roi_config_file_path)
+    
+    if station and instrument:
+        # Update specific instrument
+        click.echo(f"Adding ROI_00 to {station} - {instrument}...")
+        
+        sample_path = Path(sample_image) if sample_image else None
+        
+        try:
+            config_dict = add_roi_00_to_station_config(
+                stations_yaml_path,
+                station,
+                instrument,
+                sample_path,
+                method,
+                force=force
+            )
+            
+            # Save updated configuration
+            import yaml
+            with open(stations_yaml_path, 'w') as f:
+                yaml.dump(config_dict, f, default_flow_style=False, sort_keys=False)
+            
+            click.echo(f"✓ Added ROI_00 to {station} - {instrument}")
+            
+        except Exception as e:
+            click.echo(f"❌ Error: {e}", err=True)
+            return 1
+    else:
+        # Update all primary stations
+        click.echo("Updating all primary stations with ROI_00...")
+        
+        sample_dir = Path(sample_image).parent if sample_image else None
+        
+        try:
+            update_all_stations_roi_00(stations_yaml_path, sample_dir, force=force)
+            click.echo("✓ Updated all stations with ROI_00")
+            
+        except Exception as e:
+            click.echo(f"❌ Error: {e}", err=True)
+            return 1

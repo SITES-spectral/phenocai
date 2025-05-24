@@ -73,6 +73,10 @@ metadata = parse_image_filename('lonnstorp_LON_AGR_PL01_PHE01_2024_102_20240411_
 roi_config = load_roi_config_from_yaml('stations.yaml')
 roi_points = get_roi_points_from_config(roi_config, 'lonnstorp', 'LON_AGR_PL01_PHE01', 'ROI_01')
 roi_image = extract_roi_sub_image(image, roi_points)
+
+# ROI_00 is pre-calculated in stations.yaml
+roi_00_points = get_roi_points_from_config(roi_config, 'lonnstorp', 'LON_AGR_PL01_PHE01', 'ROI_00')
+# ROI_00 excludes sky region automatically
 ```
 
 ### phenocai.data_management
@@ -232,7 +236,9 @@ def dataset():
 @click.option('--output', '-o', type=click.Path())
 @click.option('--include-unannotated', is_flag=True)
 @click.option('--instrument', '-i', help='Instrument ID')
-def create(output, include_unannotated, instrument):
+@click.option('--roi-filter', help='Only include specific ROI')
+@click.option('--complete-rois-only/--no-complete-rois-only', default=True)
+def create(output, include_unannotated, instrument, roi_filter, complete_rois_only):
     """Create dataset from annotations.
     
     Auto-generates filename if output not specified:
@@ -240,6 +246,8 @@ def create(output, include_unannotated, instrument):
     - Example: lonnstorp_PHE01_dataset_2024_splits_20_10.csv
     - Saved to: {station}/experimental_data/
     - Validates instrument against stations.yaml
+    - --roi-filter ROI_00: For cross-station compatible datasets
+    - --complete-rois-only: Only include images with all ROIs annotated
     """
     pass
 
@@ -509,12 +517,77 @@ except ValueError as e:
     print(f"Invalid filename format: {e}")
 ```
 
+## phenocai.roi_calculator
+
+### ROI_00 Calculation and Management
+
+```python
+from phenocai.roi_calculator import (
+    calculate_roi_00,
+    serialize_polygons,
+    deserialize_polygons,
+    add_roi_00_to_station_config
+)
+
+# Calculate ROI_00 for an image
+import cv2
+image = cv2.imread('path/to/image.jpg')
+image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+# Calculate using gradient-based sky detection
+roi_00_points = calculate_roi_00(image_rgb, horizon_method='gradient')
+# Returns: [(x1, y1), (x2, y2), (x3, y3), (x4, y4)]
+
+# Serialize/deserialize for YAML storage
+roi_data = {
+    'ROI_00': {
+        'points': roi_00_points,
+        'color': (255, 255, 255),
+        'thickness': 7,
+        'description': 'Full image excluding sky',
+        'auto_generated': True
+    }
+}
+
+# Convert to YAML-friendly format (tuples → lists)
+yaml_data = serialize_polygons(roi_data)
+
+# Convert back from YAML (lists → tuples)
+original_data = deserialize_polygons(yaml_data)
+
+# Add ROI_00 to station configuration
+from pathlib import Path
+add_roi_00_to_station_config(
+    Path('stations.yaml'),
+    'lonnstorp',
+    'LON_AGR_PL01_PHE01',
+    sample_image_path=Path('sample.jpg'),
+    horizon_method='gradient',
+    force=True
+)
+```
+
+### CLI Commands for ROI_00
+
+```python
+@config_cmd.command()
+@click.option('--sample-image', type=click.Path(exists=True))
+@click.option('--station', help='Specific station to update')
+@click.option('--instrument', help='Specific instrument to update')
+@click.option('--method', type=click.Choice(['gradient', 'color', 'fixed']), default='gradient')
+@click.option('--force', is_flag=True, help='Force recalculation')
+def add_roi_00(sample_image, station, instrument, method, force):
+    """Add ROI_00 to stations.yaml configuration."""
+    pass
+```
+
 ## Performance Considerations
 
 1. **Batch Processing**: Process images in batches to manage memory
 2. **Garbage Collection**: Enabled by default between batches
 3. **In-place Operations**: Use numpy's `out` parameter for efficiency
 4. **Array Cleanup**: Always delete large arrays after use
+5. **ROI_00 Caching**: Pre-calculated in stations.yaml for performance
 
 ```python
 # Memory-efficient processing

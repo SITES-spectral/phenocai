@@ -27,7 +27,10 @@ def dataset():
 @click.option('--val-size', default=0.1, help='Validation set fraction (default: 0.1)')
 @click.option('--format', type=click.Choice(['csv', 'parquet']), default='csv', help='Output format')
 @click.option('--instrument', '-i', help='Instrument ID (overrides current instrument)')
-def create(output, include_unannotated, test_size, val_size, format, instrument):
+@click.option('--complete-rois-only/--no-complete-rois-only', default=True, help='Only include images with all ROIs annotated')
+@click.option('--min-day', type=int, help='Minimum day of year to include (e.g., 32)')
+@click.option('--roi-filter', multiple=True, help='Only include specific ROIs (e.g., --roi-filter ROI_00)')
+def create(output, include_unannotated, test_size, val_size, format, instrument, complete_rois_only, min_day, roi_filter):
     """Create dataset from current station's annotations."""
     # Handle instrument switching if provided
     if instrument:
@@ -61,6 +64,17 @@ def create(output, include_unannotated, test_size, val_size, format, instrument)
         
         if include_unannotated:
             filename_parts.append('with_unannotated')
+            
+        # Add filtering info to filename
+        if roi_filter:
+            roi_str = '_'.join(roi_filter).lower()
+            filename_parts.append(roi_str)
+        elif complete_rois_only or min_day is not None:
+            if min_day or (config.current_station == 'lonnstorp' and complete_rois_only):
+                day_filter = min_day or 32
+                filename_parts.append(f'from_day{day_filter}')
+            else:
+                filename_parts.append('complete_rois')
         
         # Add split info to filename
         filename_parts.append(f'splits_{int(test_size*100)}_{int(val_size*100)}')
@@ -86,6 +100,27 @@ def create(output, include_unannotated, test_size, val_size, format, instrument)
             output_path=None,  # Don't save yet - we'll add splits first
             include_unannotated=include_unannotated
         )
+        
+        # Filter to complete ROI sets if requested
+        if complete_rois_only or min_day is not None:
+            from ...data_management.dataset_builder import filter_complete_roi_sets
+            
+            # For Lönnstorp, we know that all ROIs started being annotated from day 32
+            if min_day is None and config.current_station == 'lonnstorp' and not roi_filter:
+                min_day = 32
+                click.echo(f"Note: For Lönnstorp, filtering to images from day {min_day} onwards (when all ROIs were annotated)")
+            
+            # Skip complete ROI filtering if specific ROIs are requested
+            if not roi_filter:
+                df = filter_complete_roi_sets(df, min_day_of_year=min_day)
+        
+        # Filter to specific ROIs if requested
+        if roi_filter:
+            roi_list = list(roi_filter)
+            initial_count = len(df)
+            df = df[df['roi_name'].isin(roi_list)]
+            filtered_count = len(df)
+            click.echo(f"Filtered to ROIs {roi_list}: {initial_count} → {filtered_count} records")
         
         # Add train/test/val splits
         from ...data_management.dataset_builder import add_train_test_split
@@ -120,7 +155,7 @@ def create(output, include_unannotated, test_size, val_size, format, instrument)
         return 1
 
 
-@dataset.command()
+@dataset.command('multi-station')
 @click.option('--stations', '-s', multiple=True, help='Stations to include (defaults to primary stations)')
 @click.option('--output', '-o', type=click.Path(), help='Output path for dataset')
 @click.option('--include-unannotated', is_flag=True, help='Include unannotated ROIs')
@@ -128,7 +163,9 @@ def create(output, include_unannotated, test_size, val_size, format, instrument)
 @click.option('--test-size', default=0.2, help='Test set fraction')
 @click.option('--val-size', default=0.1, help='Validation set fraction')
 @click.option('--format', type=click.Choice(['csv', 'parquet']), default='csv', help='Output format')
-def create_multi(stations, output, include_unannotated, balance, test_size, val_size, format):
+@click.option('--roi-filter', multiple=True, help='Only include specific ROIs (e.g., --roi-filter ROI_00)')
+@click.option('--years', multiple=True, help='Years to include (default: current year)')
+def multi_station(stations, output, include_unannotated, balance, test_size, val_size, format, roi_filter, years):
     """Create multi-station dataset."""
     # Use provided stations or defaults
     if not stations:
@@ -154,6 +191,16 @@ def create_multi(stations, output, include_unannotated, balance, test_size, val_
             
         if balance:
             filename_parts.append('balanced')
+            
+        # Add ROI filter to filename
+        if roi_filter:
+            roi_str = '_'.join(roi_filter).lower()
+            filename_parts.append(roi_str)
+        
+        # Add years if specified
+        if years:
+            years_str = '_'.join(sorted(years))
+            filename_parts.append(years_str)
         
         # Add split info to filename
         filename_parts.append(f'splits_{int(test_size*100)}_{int(val_size*100)}')
@@ -181,7 +228,9 @@ def create_multi(stations, output, include_unannotated, balance, test_size, val_
             include_unannotated=include_unannotated,
             test_size=test_size,
             val_size=val_size,
-            balance_stations=balance
+            balance_stations=balance,
+            roi_filter=list(roi_filter) if roi_filter else None,
+            years=list(years) if years else None
         )
         
         click.echo(f"\n✓ Created multi-station dataset")

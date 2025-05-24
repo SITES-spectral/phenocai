@@ -1,3 +1,19 @@
+![alt text](https://h24-original.s3.amazonaws.com/231546/28893673-EQhe9.png "SITES Spectral Thematic Center")
+# Swedish Infrastructure for Ecosystem Science (SITES) - Spectral | Thematic Center (SSTC)
+["SITES spectral"](https://www.fieldsites.se/en-GB/sites-thematic-programs/sites-spectral-32634403)
+
+
+## Maintainers
+
+* José M. Beltrán-Abaunza, PhD | Lund University, Department of Physical Geography and Ecosystem Science | SITES spectral Research Engineer
+
+
+## Contributors
+
+* José M. Beltrán-Abaunza, PhD | Lund University, Department of Physical Geography and Ecosystem Science | SITES spectral Research Engineer
+
+* Lars Eklundh, Professor | Lund University, Department of Physical Geography and Ecosystem Science | SITES spectral Coordinator
+
 # PhenoCAI
 
 Automated phenological camera image analysis using AI for environmental monitoring.
@@ -12,32 +28,34 @@ PhenoCAI (Phenological Camera AI) is a Python package for automated analysis and
 
 ## Features
 
-- 📸 **Automated phenocam image analysis**
-- ❄️ **Snow detection** using both heuristics and deep learning
-- 🎯 **ROI-based processing** for focused analysis
-- 📊 **Multi-station dataset management** with automatic file path resolution
-- 🚩 **Quality flag detection** and filtering (23+ flag types)
-- 🤖 **Transfer learning** with MobileNetV2 and custom CNNs
-- 📈 **Comprehensive evaluation** metrics and visualizations
-- 💾 **Memory-efficient** batch processing
-- 🔧 **Complete training pipeline** with callbacks and monitoring
-- 🔄 **Annotation format conversion** (daily to individual)
-- 📋 **Educational documentation** with workflow diagrams
-- 🔮 **Production-Ready Prediction** system for processing entire years of data
-- 🎲 **Grouped Stratified Splitting** for robust train/test/val datasets
-- 🏷️ **Intelligent Dataset Naming** with station, instrument, and configuration details
-- 🔍 **Dynamic Instrument Validation** against stations.yaml configuration
+- **Automated phenocam image analysis** with ROI-based processing
+- **Snow detection** using both heuristics and deep learning
+- **ROI_00 support** for full-image analysis excluding sky regions
+- **Multi-station dataset management** with automatic file path resolution
+- **Quality flag detection** and filtering (23+ flag types)
+- **Transfer learning** with MobileNetV2 and custom CNNs
+- **Comprehensive evaluation** metrics and visualizations
+- **Memory-efficient** batch processing
+- **Complete training pipeline** with callbacks and monitoring
+- **Annotation format conversion** (daily to individual)
+- **Educational documentation** with workflow diagrams
+- **Production-Ready Prediction** system for processing entire years of data
+- **Grouped Stratified Splitting** for robust train/test/val datasets
+- **Intelligent Dataset Naming** with station, instrument, and configuration details
+- **Dynamic Instrument Validation** against stations.yaml configuration
+- **Cross-station compatibility** through ROI_00 standardization
 
-## What's New (v0.2.0)
+## What's New (v0.3.0)
 
-- **🚀 Complete Pipeline**: Single command runs dataset creation → training → evaluation → prediction
-- **📓 Interactive Notebook**: Marimo notebook for visual pipeline execution and monitoring
-- **Complete Prediction System**: Apply trained models to process entire years of phenocam data
-- **Enhanced Dataset Creation**: Automatic train/test/val splits with grouped stratification
-- **File Path Support**: Full image paths with day-of-year subdirectory structure
-- **Quality-Aware Predictions**: Automatic discard detection and 20+ quality flags
-- **Batch Processing**: Process date ranges or entire directories efficiently
-- **Export Flexibility**: Save predictions in YAML, CSV, or JSON formats
+- **ROI_00 Automatic Calculation**: Advanced sky detection algorithm matching phenotag/phenocams packages
+- **Cross-Station Training**: Train on one station and evaluate on others using ROI_00
+- **Complete Pipeline Command**: Single command runs dataset creation, training, evaluation, and prediction
+- **Interactive Marimo Notebook**: Visual pipeline execution and monitoring
+- **Enhanced Prediction System**: Apply trained models to process entire years of phenocam data
+- **Improved Dataset Creation**: Automatic train/test/val splits with grouped stratification
+- **ROI Completeness Filtering**: Handle imbalanced ROI annotations across time
+- **Annotation Generation**: Create annotations using ML predictions and heuristics
+- **Station Configuration Updates**: Pre-calculated ROI_00 in stations.yaml for performance
 
 See [CHANGELOG.md](CHANGELOG.md) for full details.
 
@@ -57,7 +75,7 @@ source src/phenocai/config/env.sh
 
 ## Quick Start
 
-### 🚀 Complete Pipeline (Recommended)
+### Complete Pipeline (Recommended)
 ```bash
 # Run the entire pipeline with one command
 uv run phenocai pipeline full
@@ -74,7 +92,7 @@ uv run phenocai pipeline full \
 marimo edit notebooks/phenocai_pipeline.py
 ```
 
-### 📋 Step-by-Step Setup
+### Step-by-Step Setup
 ```bash
 # Check system configuration
 uv run phenocai info
@@ -90,6 +108,9 @@ uv run phenocai station switch lonnstorp --instrument LON_AGR_PL01_PHE01
 
 # List instruments for current station
 uv run phenocai station instruments
+
+# Add ROI_00 to stations configuration
+uv run phenocai config add-roi-00
 ```
 
 ### 2. Data Preparation
@@ -156,6 +177,8 @@ uv run phenocai analyze analyze-dataset dataset.csv --sample-size 200
 ```bash
 # Dataset creation and management
 uv run phenocai dataset create [OPTIONS]
+uv run phenocai dataset create --roi-filter ROI_00  # Cross-station compatible
+uv run phenocai dataset create --complete-rois-only  # Only images with all ROIs
 uv run phenocai dataset create-multi --stations lonnstorp robacksdalen
 uv run phenocai dataset filter INPUT OUTPUT [OPTIONS]
 uv run phenocai dataset info DATASET_PATH
@@ -207,6 +230,7 @@ uv run phenocai station switch STATION_NAME
 uv run phenocai config show
 uv run phenocai config validate
 uv run phenocai config init
+uv run phenocai config add-roi-00 [OPTIONS]
 ```
 
 ## Model Architectures
@@ -303,6 +327,51 @@ annotations:
 - **Usable images**: 2,163 (reduced from 5,559)
 - **Improved class balance**: Snow presence increased to 31.6%
 - **Better model performance**: Reduced noise from problematic images
+
+## Cross-Station Evaluation
+
+PhenoCAI supports training models at one station and evaluating at another using ROI_00 standardization:
+
+### ROI_00 Universal Approach
+
+ROI_00 represents the full image excluding the sky region, automatically calculated using advanced sky detection algorithms from phenotag/phenocams packages.
+
+```bash
+# Ensure ROI_00 is configured for all stations
+uv run phenocai config add-roi-00
+
+# Train on Lönnstorp (southern Sweden)
+uv run phenocai dataset create --roi-filter ROI_00 --test-size 0.0
+uv run phenocai train model lonnstorp_roi_00_dataset.csv
+
+# Evaluate on Röbäcksdalen (northern Sweden)
+uv run phenocai station switch robacksdalen
+uv run phenocai dataset create --roi-filter ROI_00
+uv run phenocai evaluate model /path/to/model.h5 robacksdalen_dataset.csv
+```
+
+### Multi-Station Training
+```bash
+# Create combined dataset
+uv run phenocai dataset create-multi \
+    --stations lonnstorp robacksdalen abisko \
+    --roi-filter ROI_00
+```
+
+See [Cross-Station Evaluation Guide](docs/cross_station_evaluation.md) for details.
+
+### Automated Cross-Station Pipeline
+```bash
+# Complete pipeline with annotation generation
+uv run phenocai cross-station pipeline \
+    --train-stations lonnstorp \
+    --eval-stations robacksdalen abisko \
+    --years 2023 2024 \
+    --annotation-years 2022 2025 \
+    --use-heuristics
+```
+
+See [Annotation Generation Workflow](docs/workflow_annotation_generation.md) for expanding datasets.
 
 ## Project Structure
 
@@ -411,7 +480,7 @@ uv run phenocai evaluate model models/final_model.h5 holdout_test.csv --analyze-
 
 ## Current Status
 
-✅ **Completed:**
+**Completed:**
 - Complete training pipeline with TensorFlow
 - Transfer learning with MobileNetV2
 - Custom CNN architectures and ensemble methods
@@ -421,13 +490,18 @@ uv run phenocai evaluate model models/final_model.h5 holdout_test.csv --analyze-
 - Educational documentation with Mermaid diagrams
 - Memory-efficient data loading pipeline
 - Advanced evaluation metrics and visualizations
+- ROI_00 automatic calculation and sky detection
+- Cross-station training and evaluation support
+- Complete pipeline automation
+- Interactive Marimo notebook interface
+- Annotation generation with ML and heuristics
 
-🚧 **In Progress:**
+**In Progress:**
 - Model optimization and hyperparameter tuning
 - Production deployment pipeline
 - Real-time inference system
 
-📋 **Planned:**
+**Planned:**
 - Web API for model serving
 - Automated retraining pipeline
 - Integration with SITES data infrastructure
