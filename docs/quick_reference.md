@@ -13,7 +13,7 @@ uv run phenocai info
 # Initialize directories
 uv run phenocai config init
 
-# Add ROI_00 to all stations (one-time setup)
+# Add ROI_00 to all stations (one-time setup for cross-station compatibility)
 uv run phenocai config add-roi-00
 ```
 
@@ -97,6 +97,32 @@ uv run phenocai dataset create \
     --test-size 0.2 \
     --val-size 0.1
 # Note: Images from the same day are kept together in the same split
+
+### Cross-Station Evaluation
+```bash
+# Setup ROI_00 for cross-station compatibility
+uv run phenocai config add-roi-00
+
+# Create ROI_00 dataset for training (use all data)
+uv run phenocai dataset create --roi-filter ROI_00 --test-size 0.0 --val-size 0.2
+
+# Switch station for evaluation
+uv run phenocai station switch robacksdalen
+uv run phenocai dataset create --roi-filter ROI_00
+
+# Cross-station evaluation commands
+uv run phenocai cross-station evaluate model.h5 \
+    --train-station lonnstorp \
+    --test-station robacksdalen
+
+# Complete cross-station pipeline with annotation generation  
+uv run phenocai cross-station pipeline \
+    --train-stations lonnstorp \
+    --eval-stations robacksdalen abisko \
+    --years 2023 2024 \
+    --annotation-years 2022 2025 \
+    --use-heuristics
+```
 # The file_path field includes day-of-year subdirectories
 ```
 

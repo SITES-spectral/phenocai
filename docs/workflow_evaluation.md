@@ -6,11 +6,11 @@ Evaluation is like giving the trained model a final exam. We test it on photos i
 
 ```mermaid
 graph TD
-    A[🧠 Trained Model] --> B[📝 Test Set]
-    B --> C[🔍 Make Predictions]
-    C --> D[📊 Compare with Truth]
-    D --> E[📈 Calculate Scores]
-    E --> F[📋 Report Card]
+    A[Trained Model] --> B[Test Set]
+    B --> C[Make Predictions]
+    C --> D[Compare with Truth]
+    D --> E[Calculate Scores]
+    E --> F[Report Card]
     
     style A fill:#f3e5f5
     style B fill:#ffecb3
@@ -20,29 +20,29 @@ graph TD
     style F fill:#81c784
 ```
 
-## Why Evaluate? 🤔
+## Why Evaluate?
 
 Imagine a student who memorized all the answers to practice questions but can't solve new problems. We need to check if our model truly understands!
 
 ```mermaid
 graph LR
     A[Training Performance] --> B{Real Understanding?}
-    B -->|Just Memorized| C[❌ Bad on New Data]
-    B -->|Truly Learned| D[✅ Good on New Data]
+    B -->|Just Memorized| C[Bad on New Data]
+    B -->|Truly Learned| D[Good on New Data]
     
     style C fill:#ffcdd2
     style D fill:#c8e6c9
 ```
 
-## The Test Set: Never Seen Before! 🎯
+## The Test Set: Never Seen Before!
 
 Remember our data split? The test set was kept hidden during training:
 
 ```mermaid
 graph TD
-    A[Original Data] --> B[Training 70%<br/>📚 For Learning]
-    A --> C[Validation 10%<br/>📝 For Checking]
-    A --> D[Test 20%<br/>🎓 Final Exam]
+    A[Original Data] --> B[Training 70%<br/>For Learning]
+    A --> C[Validation 10%<br/>For Checking]
+    A --> D[Test 20%<br/>Final Exam]
     
     D --> E[Never Used Until Now!]
     
@@ -52,14 +52,14 @@ graph TD
     style E fill:#ff5252,color:#fff
 ```
 
-## Evaluation Metrics Explained Simply 📊
+## Evaluation Metrics Explained Simply
 
 ### 1. Accuracy: Overall Score
 
 ```mermaid
 graph TD
-    A[100 Predictions] --> B[85 Correct ✅]
-    A --> C[15 Wrong ❌]
+    A[100 Predictions] --> B[85 Correct]
+    A --> C[15 Wrong]
     B --> D[Accuracy = 85%]
     
     style B fill:#c8e6c9
@@ -90,10 +90,10 @@ style D fill:#e8f5e9
 ```
 
 This shows:
-- **True Positives (150)**: Correctly found snow ✅
-- **True Negatives (800)**: Correctly found no snow ✅
-- **False Positives (50)**: Said snow when there wasn't ❌
-- **False Negatives (100)**: Missed snow that was there ❌
+- **True Positives (150)**: Correctly found snow
+- **True Negatives (800)**: Correctly found no snow
+- **False Positives (50)**: Said snow when there wasn't
+- **False Negatives (100)**: Missed snow that was there
 
 ### 3. Precision and Recall: Different Perspectives
 
@@ -102,9 +102,9 @@ graph TD
 
 subgraph Precision
 
-A["Said 'Snow' 200 times"] --> B["150 Correct ✅"]
+A["Said 'Snow' 200 times"] --> B["150 Correct"]
 
-A --> C["50 Wrong ❌"]
+A --> C["50 Wrong"]
 
 B --> D["Precision = 75%"]
 
@@ -112,9 +112,9 @@ end
 
 subgraph Recall
 
-E["Actually 250 Snow Cases"] --> F["Found 150 ✅"]
+E["Actually 250 Snow Cases"] --> F["Found 150"]
 
-E --> G["Missed 100 ❌"]
+E --> G["Missed 100"]
 
 F --> H["Recall = 60%"]
 
@@ -143,7 +143,7 @@ graph LR
 
 F1 Score balances precision and recall (like averaging them smartly).
 
-## Evaluation by Categories 🏷️
+## Evaluation by Categories
 
 ### By ROI (Region of Interest)
 
@@ -164,10 +164,10 @@ graph TD
 
 ```mermaid
 graph TD
-    A[Performance by Condition] --> B[Clean Images: 92% ✅]
-    A --> C[Foggy Images: 73% ⚠️]
-    A --> D[Bright Images: 68% ⚠️]
-    A --> E[Multiple Issues: 51% ❌]
+    A[Performance by Condition] --> B[Clean Images: 92%]
+    A --> C[Foggy Images: 73%]
+    A --> D[Bright Images: 68%]
+    A --> E[Multiple Issues: 51%]
     
     style B fill:#4caf50,color:#fff
     style C fill:#ffc107
@@ -175,16 +175,16 @@ graph TD
     style E fill:#f44336,color:#fff
 ```
 
-## Visual Evaluation Tools 📈
+## Visual Evaluation Tools
 
 ### 1. ROC Curve (How Well We Separate Classes)
 
 ```mermaid
 graph TD
     subgraph ROC Curve
-        A[Perfect Model 📐] --> B[Area = 1.0]
-        C[Good Model 📊] --> D[Area = 0.85]
-        E[Random Guess 🎲] --> F[Area = 0.5]
+        A[Perfect Model] --> B[Area = 1.0]
+        C[Good Model] --> D[Area = 0.85]
+        E[Random Guess] --> F[Area = 0.5]
     end
     
     style B fill:#4caf50,color:#fff
@@ -201,17 +201,17 @@ graph TD
 
 subgraph Correct_Predictions
 
-A[Clear Snow] --> B[Predicted: Snow ✓]
+A[Clear Snow] --> B[Predicted: Snow (Correct)]
 
-C[Sunny Day] --> D[Predicted: No Snow ✓]
+C[Sunny Day] --> D[Predicted: No Snow (Correct)]
 
 end
 
 subgraph Wrong_Predictions
 
-E[Light Snow] --> F[Predicted: No Snow ✗]
+E[Light Snow] --> F[Predicted: No Snow (Wrong)]
 
-G[Bright Ground] --> H[Predicted: Snow ✗]
+G[Bright Ground] --> H[Predicted: Snow (Wrong)]
 
 end
 
@@ -224,7 +224,7 @@ style F fill:#ffcdd2
 style H fill:#ffcdd2
 ```
 
-## Error Analysis 🔍
+## Error Analysis
 
 Understanding why the model makes mistakes:
 
@@ -248,7 +248,7 @@ graph TD
     style H fill:#c5e1a5
 ```
 
-## Performance by Time of Day ⏰
+## Performance by Time of Day
 
 ```mermaid
 graph TD
@@ -263,7 +263,7 @@ graph TD
     style E fill:#f44336,color:#fff
 ```
 
-## Comparing Models 🏁
+## Comparing Models
 
 When you train multiple models, compare them:
 
@@ -275,7 +275,7 @@ graph TD
         E[With Augmentation] --> F[Accuracy: 88%<br/>Speed: Fast]
     end
     
-    F --> G[🏆 Best Model]
+    F --> G[Best Model]
     
     style F fill:#4caf50,color:#fff
     style G fill:#ffd700
@@ -299,7 +299,7 @@ uv run phenocai evaluate benchmark \
     --dataset test_dataset.csv
 ```
 
-## Evaluation Report Card 📋
+## Evaluation Report Card
 
 A good evaluation report includes:
 
@@ -319,21 +319,21 @@ graph TD
     style F fill:#81c784
 ```
 
-## Understanding Results 🎯
+## Understanding Results
 
 ### Good Results Look Like:
-- ✅ High accuracy (>80%)
-- ✅ Balanced precision and recall
-- ✅ Good performance across all ROIs
-- ✅ Handles common quality issues
+- High accuracy (>80%)
+- Balanced precision and recall
+- Good performance across all ROIs
+- Handles common quality issues
 
 ### Warning Signs:
-- ⚠️ Big gap between training and test accuracy
-- ⚠️ Very low recall (missing many cases)
-- ⚠️ Poor performance on specific conditions
-- ⚠️ Works only on clean images
+- Big gap between training and test accuracy
+- Very low recall (missing many cases)
+- Poor performance on specific conditions
+- Works only on clean images
 
-## Making Improvements 🔧
+## Making Improvements
 
 Based on evaluation results:
 
@@ -350,7 +350,7 @@ graph TD
     style H fill:#c5e1a5
 ```
 
-## Evaluation Checklist ✅
+## Evaluation Checklist
 
 - [ ] Test set never used during training
 - [ ] Calculate multiple metrics (not just accuracy)

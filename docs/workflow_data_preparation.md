@@ -75,10 +75,12 @@ Labels are saved in special files (YAML format) that computers can read:
 ```yaml
 filename: photo_name.jpg
 annotations:
-  - roi_name: ROI_00
+  - roi_name: ROI_00  # Full image excluding sky region
     snow_presence: true
     flags: ['fog', 'high_brightness']
     discard: false
+    # ROI_00 is automatically calculated using advanced sky detection
+    # algorithms for consistent analysis across all stations
 ```
 
 ## Step 3: Quality Checking

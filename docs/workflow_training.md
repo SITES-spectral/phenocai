@@ -6,11 +6,11 @@ Training is like teaching a student by showing them many examples. The computer 
 
 ```mermaid
 graph TD
-    A[📚 Prepared Data] --> B[🧠 Neural Network]
-    B --> C[🔄 Learning Loop]
-    C --> D[📈 Check Progress]
+    A[Prepared Data] --> B[Neural Network]
+    B --> C[Learning Loop]
+    C --> D[Check Progress]
     D -->|Not Good Enough| C
-    D -->|Good Enough| E[💾 Save Model]
+    D -->|Good Enough| E[Save Model]
     
     style A fill:#e3f2fd
     style B fill:#f3e5f5
@@ -19,7 +19,7 @@ graph TD
     style E fill:#c8e6c9
 ```
 
-## What is a Neural Network? 🧠
+## What is a Neural Network?
 
 Think of a neural network as a series of filters that learn to recognize patterns:
 
@@ -39,7 +39,7 @@ graph LR
     style F fill:#a5d6a7
 ```
 
-## Transfer Learning: The Smart Shortcut 🚀
+## Transfer Learning: The Smart Shortcut
 
 Instead of starting from scratch, we use a pre-trained model (MobileNetV2) that already knows basic image features:
 
@@ -64,7 +64,7 @@ graph TD
 3. **Less Data**: Need fewer examples
 4. **Cheaper**: Use less computing power
 
-## The Training Process 🏃‍♂️
+## The Training Process
 
 ### Step 1: Load the Data
 
@@ -139,7 +139,7 @@ graph TD
 
 ## Key Concepts Explained Simply
 
-### Learning Rate 📊
+### Learning Rate
 
 How big steps the model takes when learning:
 
@@ -154,14 +154,14 @@ graph LR
     style E fill:#ffcdd2
 ```
 
-### Overfitting vs Underfitting 🎯
+### Overfitting vs Underfitting
 
 ```mermaid
 graph TD
     A[Training Data] --> B{Model Performance}
-    B --> C[Underfitting<br/>😴]
-    B --> D[Just Right<br/>😊]
-    B --> E[Overfitting<br/>🤓]
+    B --> C[Underfitting<br/>Too Simple]
+    B --> D[Just Right<br/>Good Balance]
+    B --> E[Overfitting<br/>Too Complex]
     
     C --> F[Too Simple<br/>Can't Learn Patterns]
     D --> G[Good Balance<br/>Generalizes Well]
@@ -172,7 +172,7 @@ graph TD
     style E fill:#ffecb3
 ```
 
-### Loss Function (How Wrong We Are) 📉
+### Loss Function (How Wrong We Are)
 
 The loss function measures mistakes:
 
@@ -188,7 +188,7 @@ graph TD
     style D fill:#ffecb3
 ```
 
-## Training Parameters 🎛️
+## Training Parameters
 
 | Parameter | What it Does | Typical Value | Analogy |
 |-----------|--------------|---------------|---------|
@@ -197,7 +197,7 @@ graph TD
 | Learning Rate | How fast to learn | 0.001 | Walking speed |
 | Validation Split | Data for checking | 10% | Practice quiz |
 
-## Monitoring Training 📊
+## Monitoring Training
 
 ### Loss Curves
 
@@ -232,7 +232,7 @@ graph LR
     style F fill:#81c784
 ```
 
-## Data Augmentation 🎨
+## Data Augmentation
 
 Making training data more diverse by creating variations:
 
@@ -252,7 +252,7 @@ graph TD
     style F fill:#c8e6c9
 ```
 
-## Fine-Tuning Strategy 🎯
+## Fine-Tuning Strategy
 
 Two-stage training for better results:
 
@@ -321,7 +321,7 @@ The training system will:
 - Track best model based on validation accuracy
 - Generate training history plots
 
-## Training Checklist ✅
+## Training Checklist
 
 - [ ] Data loaded correctly
 - [ ] Model architecture chosen

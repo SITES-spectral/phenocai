@@ -13,7 +13,11 @@ uv sync
 
 2. Configure ROI_00 for cross-station compatibility:
 ```bash
+# Add ROI_00 (full image excluding sky) to all station configurations
 uv run phenocai config add-roi-00
+
+# ROI_00 is automatically calculated using advanced sky detection
+# algorithms from phenotag/phenocams packages for consistent cross-station analysis
 ```
 
 3. Verify your current station and instrument:
