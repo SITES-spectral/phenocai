@@ -276,11 +276,17 @@ def compile_model(
     # Auto-select metrics if not provided
     if metrics is None:
         if num_classes == 2:
+            # Use multiple thresholds to better understand model behavior
             metrics = [
                 'accuracy',
-                tf.keras.metrics.Precision(name='precision'),
-                tf.keras.metrics.Recall(name='recall'),
-                tf.keras.metrics.AUC(name='auc')
+                tf.keras.metrics.Precision(name='precision', thresholds=0.5),
+                tf.keras.metrics.Recall(name='recall', thresholds=0.5),
+                tf.keras.metrics.Precision(name='precision_0.3', thresholds=0.3),
+                tf.keras.metrics.Recall(name='recall_0.3', thresholds=0.3),
+                tf.keras.metrics.Precision(name='precision_0.1', thresholds=0.1),
+                tf.keras.metrics.Recall(name='recall_0.1', thresholds=0.1),
+                tf.keras.metrics.AUC(name='auc'),
+                tf.keras.metrics.BinaryAccuracy(name='binary_accuracy', threshold=0.5)
             ]
         else:
             metrics = [

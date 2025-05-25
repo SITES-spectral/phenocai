@@ -291,7 +291,7 @@ uv run phenocai convert all-stations [OPTIONS]
 
 #### Existing Commands (Enhanced)
 - Station management: `station list`, `station switch`, `station info`
-- Dataset operations: `dataset create`, `dataset create-multi`, `dataset filter`
+- Dataset operations: `dataset create`, `dataset multi-station`, `dataset filter`
 - Configuration: `config show`, `config validate`, `config init`
 
 ### Configuration

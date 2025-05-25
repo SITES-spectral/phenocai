@@ -328,15 +328,16 @@ graph LR
 **Best for**: Testing model robustness across locations
 
 ```bash
-# Cross-station evaluation commands
-uv run phenocai cross-station evaluate saved_model.h5 \
-    --train-station lonnstorp \
-    --test-station robacksdalen
+# Cross-station evaluation using standard commands
+# 1. Train model on first station
+uv run phenocai train model lonnstorp_dataset.csv
 
-# Analyze cross-station performance
-uv run phenocai cross-station analyze results/ \
-    --metric accuracy \
-    --plot-confusion
+# 2. Switch to second station and create test dataset  
+uv run phenocai station switch robacksdalen
+uv run phenocai dataset create --roi-filter ROI_00
+
+# 3. Evaluate trained model on second station's data
+uv run phenocai evaluate model saved_model.h5 robacksdalen_dataset.csv
 ```
 
 **See**: [Cross-Station Evaluation Guide](cross_station_evaluation.md)

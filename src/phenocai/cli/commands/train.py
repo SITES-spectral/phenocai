@@ -176,34 +176,56 @@ def fine_tune(
         # Fine-tune
         history = trainer.train(str(dataset_path), fine_tune=True)
         
-        click.echo(f"\n✓ Fine-tuning complete!")
+        click.echo(f"\nFine-tuning complete!")
         click.echo(f"Fine-tuned model saved to: {output_dir}")
         
     except Exception as e:
-        click.echo(f"\n❌ Fine-tuning failed: {str(e)}", err=True)
+        click.echo(f"\nFine-tuning failed: {str(e)}", err=True)
         raise click.Abort()
 
 
 @train.command()
 def list_models():
     """List available trained models."""
+    from pathlib import Path
+    
     model_dir = app_config.model_output_dir
     
-    if not model_dir.exists():
+    # Also check alternative common locations
+    alternative_dirs = [
+        Path("/home/jobelund/lu2024-12-46/SITES/Spectral/analysis/phenocams/transfer_learning/lonnstorp/trained_models/experimental_models_final_df_split"),
+        Path("trained_models"),
+        Path("./trained_models"),
+    ]
+    
+    # Find existing directory
+    existing_dir = None
+    if model_dir.exists():
+        existing_dir = model_dir
+    else:
+        for alt_dir in alternative_dirs:
+            if alt_dir.exists():
+                existing_dir = alt_dir
+                break
+    
+    if not existing_dir:
         click.echo("No models directory found")
+        click.echo(f"Checked: {model_dir}")
+        for alt_dir in alternative_dirs:
+            click.echo(f"Checked: {alt_dir}")
         return
     
-    click.echo(f"\n=== Trained Models in {model_dir} ===")
+    click.echo(f"\n=== Trained Models in {existing_dir} ===")
     
     # Look for model directories
-    model_dirs = [d for d in model_dir.iterdir() if d.is_dir()]
+    model_dirs = [d for d in existing_dir.iterdir() if d.is_dir()]
     
     if not model_dirs:
         click.echo("No trained models found")
         return
     
     for model_path in sorted(model_dirs):
-        click.echo(f"\n📁 {model_path.name}")
+        click.echo(f"\n{model_path.name}:")
         
         # Check for model files
         h5_files = list(model_path.glob("*.h5"))
@@ -224,11 +246,16 @@ def list_models():
         # Check for config
         config_file = model_path / 'config' / 'model_config.yaml'
         if config_file.exists():
-            import yaml
-            with open(config_file, 'r') as f:
-                config = yaml.safe_load(f)
-            click.echo(f"  • Model type: {config.get('name', 'unknown')}")
-            click.echo(f"  • Epochs: {config.get('epochs', 'unknown')}")
+            try:
+                import yaml
+                with open(config_file, 'r') as f:
+                    config = yaml.safe_load(f)
+                click.echo(f"  • Model type: {config.get('name', 'unknown')}")
+                click.echo(f"  • Epochs: {config.get('epochs', 'unknown')}")
+            except yaml.constructor.ConstructorError:
+                click.echo("  • Config: Contains unsupported YAML format (likely Python objects)")
+            except Exception as e:
+                click.echo(f"  • Config: Error reading ({str(e)[:50]}...)")
 
 
 @train.command()

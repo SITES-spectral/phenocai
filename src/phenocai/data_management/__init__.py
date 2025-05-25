@@ -24,6 +24,11 @@ from .multi_station_builder import (
     filter_dataset_by_criteria
 )
 
+from .dataset_balancer import (
+    DatasetBalancer,
+    balance_dataset_from_csv
+)
+
 __all__ = [
     'load_daily_annotations',
     'load_individual_annotation', 
@@ -34,5 +39,7 @@ __all__ = [
     'DatasetStats',
     'create_multi_station_dataset',
     'load_multi_station_dataset',
-    'filter_dataset_by_criteria'
+    'filter_dataset_by_criteria',
+    'DatasetBalancer',
+    'balance_dataset_from_csv'
 ]

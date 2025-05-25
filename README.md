@@ -179,10 +179,9 @@ uv run phenocai analyze analyze-dataset dataset.csv --sample-size 200
 uv run phenocai dataset create [OPTIONS]
 uv run phenocai dataset create --roi-filter ROI_00  # Cross-station compatible
 uv run phenocai dataset create --complete-rois-only  # Only images with all ROIs
-uv run phenocai dataset create-multi --stations lonnstorp robacksdalen
+uv run phenocai dataset multi-station --stations lonnstorp robacksdalen
 uv run phenocai dataset filter INPUT OUTPUT [OPTIONS]
 uv run phenocai dataset info DATASET_PATH
-uv run phenocai dataset validate DATASET_PATH
 ```
 
 ### Training Commands
@@ -431,7 +430,7 @@ phenocai/
 ```bash
 # 1. Convert annotations and create dataset
 uv run phenocai convert all-stations
-uv run phenocai dataset create-multi --stations lonnstorp robacksdalen
+uv run phenocai dataset multi-station --stations lonnstorp robacksdalen
 
 # 2. Analyze and clean data
 uv run phenocai train analyze-dataset multi_station_dataset.csv

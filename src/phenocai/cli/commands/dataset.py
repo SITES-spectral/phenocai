@@ -401,3 +401,63 @@ def filter(input_path, output_path, stations, rois, min_year, max_year, exclude_
     except Exception as e:
         click.echo(f"Error filtering dataset: {e}", err=True)
         return 1
+
+
+@dataset.command()
+@click.argument('input_path', type=click.Path(exists=True))
+@click.argument('output_path', type=click.Path(), required=False)
+@click.option('--ratio', '-r', default=1.0, help='Ratio of majority to minority class (default: 1.0 for balanced)')
+@click.option('--target-column', default='snow_presence', help='Column to balance on')
+@click.option('--random-seed', default=42, type=int, help='Random seed for reproducibility')
+def balance(input_path, output_path, ratio, target_column, random_seed):
+    """Balance dataset by undersampling majority class.
+    
+    This command creates a balanced dataset by taking all samples from the 
+    minority class (usually snow) and randomly sampling from the majority 
+    class (usually no-snow) to achieve the desired ratio.
+    
+    Examples:
+        # Create perfectly balanced dataset (1:1 ratio)
+        phenocai dataset balance dataset.csv
+        
+        # Create dataset with 2 no-snow samples for each snow sample
+        phenocai dataset balance dataset.csv --ratio 2.0
+    """
+    from ...data_management.dataset_balancer import balance_dataset_from_csv
+    
+    input_path = Path(input_path)
+    
+    # Generate output path if not provided
+    if output_path is None:
+        stem = input_path.stem
+        suffix = input_path.suffix
+        
+        # Add balance info to filename
+        if ratio == 1.0:
+            balance_str = 'balanced'
+        else:
+            balance_str = f'ratio_{ratio:.1f}'.replace('.', '_')
+        
+        output_filename = f"{stem}_{balance_str}{suffix}"
+        output_path = input_path.parent / output_filename
+    else:
+        output_path = Path(output_path)
+    
+    click.echo(f"Balancing dataset with ratio {ratio}:1 (majority:minority)...")
+    
+    try:
+        # Balance the dataset
+        result_path = balance_dataset_from_csv(
+            str(input_path),
+            str(output_path),
+            target_column=target_column,
+            ratio=ratio,
+            random_seed=random_seed
+        )
+        
+        click.echo(f"\n✓ Successfully created balanced dataset")
+        click.echo(f"Output saved to: {result_path}")
+        
+    except Exception as e:
+        click.echo(f"Error balancing dataset: {e}", err=True)
+        return 1

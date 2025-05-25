@@ -90,7 +90,7 @@
 1. **Command-Line Interface**
    - Complete CLI with Click framework
    - Station management commands (list, switch, info, instruments)
-   - Dataset commands (create, create-multi, filter, info)
+   - Dataset commands (create, multi-station, filter, info)
    - Training commands (model, fine-tune, list-presets)
    - Evaluation commands (model, compare, benchmark)
    - Prediction commands (apply, batch, export)

@@ -57,7 +57,7 @@ uv run phenocai dataset create --roi-filter ROI_00
 uv run phenocai dataset create --no-complete-rois-only
 
 # Create multi-station dataset (auto-named)
-uv run phenocai dataset create-multi \
+uv run phenocai dataset multi-station \
     --stations lonnstorp robacksdalen
 # Creates: experimental_data/multi_station_lonnstorp_robacksdalen_dataset_2024_splits_20_10.csv
 
@@ -110,10 +110,8 @@ uv run phenocai dataset create --roi-filter ROI_00 --test-size 0.0 --val-size 0.
 uv run phenocai station switch robacksdalen
 uv run phenocai dataset create --roi-filter ROI_00
 
-# Cross-station evaluation commands
-uv run phenocai cross-station evaluate model.h5 \
-    --train-station lonnstorp \
-    --test-station robacksdalen
+# Note: Use regular evaluate command for cross-station evaluation
+# Train on one station, then evaluate on another station's dataset
 
 # Complete cross-station pipeline with annotation generation  
 uv run phenocai cross-station pipeline \

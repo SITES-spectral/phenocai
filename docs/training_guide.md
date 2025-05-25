@@ -200,7 +200,7 @@ To train on both Lönnstorp and Röbäcksdalen:
 
 ```bash
 # Create multi-station dataset
-uv run phenocai dataset create-multi \
+uv run phenocai dataset multi-station \
     --stations lonnstorp robacksdalen \
     --output multi_station_dataset.csv
 

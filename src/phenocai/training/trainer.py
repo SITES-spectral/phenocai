@@ -34,6 +34,7 @@ from .callbacks import (
     ConfusionMatrixCallback,
     LearningRateLogger
 )
+from .validation_metrics import ValidationMetricsCallback, ThresholdTuningCallback
 
 
 class ModelTrainer:
