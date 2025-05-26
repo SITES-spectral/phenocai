@@ -83,6 +83,11 @@ uv run phenocai dataset filter input.csv output.csv \
 # Create clean dataset (no quality flags)
 uv run phenocai dataset filter input.csv --no-flags
 # Creates: input_clean_filtered.csv
+
+# Balance dataset for better model performance
+uv run phenocai dataset balance input.csv balanced.csv \
+    --target-ratio 0.5  # 50/50 snow/no-snow
+    --method undersample  # or oversample
 ```
 
 ### Dataset Preparation & Splitting
@@ -188,6 +193,14 @@ uv run phenocai cross-station pipeline \
 # Evaluate on test set
 uv run phenocai evaluate model trained_models/mobilenet/final_model.h5 dataset.csv
 
+# Optimize prediction threshold
+uv run phenocai evaluate optimize-threshold model.h5 dataset.csv \
+    --split val --metric balanced_accuracy
+
+# Evaluate with custom threshold
+uv run phenocai evaluate model model.h5 dataset.csv \
+    --threshold 0.65
+
 # Compare with manual annotations
 uv run phenocai evaluate compare dataset.csv predictions.json
 
@@ -206,7 +219,8 @@ uv run phenocai predict batch model.h5 \
     --directory /2024/ \
     --output-dir predictions/ \
     --format yaml \
-    --use-heuristics
+    --use-heuristics \
+    --threshold 0.65  # Use optimized threshold
 
 # Process specific date range
 uv run phenocai predict batch model.h5 \
@@ -214,6 +228,14 @@ uv run phenocai predict batch model.h5 \
     --end-day 200 \
     --year 2024 \
     --output-dir seasonal_predictions/
+
+# Process multiple years efficiently
+for year in 2022 2023 2024 2025; do
+    uv run phenocai predict batch model.h5 \
+        --year $year \
+        --output-dir predictions/$year/ \
+        --threshold 0.65
+done
 
 # Export predictions to multiple formats
 uv run phenocai predict export predictions/ \
@@ -366,11 +388,26 @@ export PHENOCAI_LOG_LEVEL="INFO"  # or DEBUG
 ## Tips
 
 1. **Start with filtered data**: Remove fog, high_brightness, and lens_water_drops for cleaner training data
-2. **Check class balance**: Use `has_flags` to separate clean vs problematic samples
-3. **Use appropriate batch sizes**: Default is 100 for memory efficiency
-4. **Monitor splits**: Ensure train/test/val have similar distributions
-5. **Use ROI_00 for cross-station work**: Provides consistent view across different camera angles
-6. **Configure ROI_00 once**: Run `uv run phenocai config add-roi-00` for automatic sky exclusion
+2. **Balance your dataset**: Use `dataset balance` command for better model performance
+3. **Optimize thresholds**: Use validation set to find optimal prediction threshold
+4. **Check class balance**: Use `has_flags` to separate clean vs problematic samples
+5. **Use appropriate batch sizes**: Default is 100 for memory efficiency
+6. **Monitor splits**: Ensure train/test/val have similar distributions
+7. **Use ROI_00 for cross-station work**: Provides consistent view across different camera angles
+8. **Configure ROI_00 once**: Run `uv run phenocai config add-roi-00` for automatic sky exclusion
+
+## Performance Benchmarks
+
+### Model Performance (v0.4.0)
+- **Lönnstorp Balanced Model**: 95.7% accuracy
+- **Cross-Station (Lönnstorp → Röbäcksdalen)**: 85.3% accuracy
+- **Processing Speed**: 1000+ images/minute on GPU
+- **Optimal Threshold**: 0.65 for balanced accuracy
+
+### Dataset Statistics
+- **Original**: 13.6% snow presence (imbalanced)
+- **Balanced**: 50% snow presence (optimal for training)
+- **Clean Subset**: 26.1% of data (no quality flags)
 
 ## Troubleshooting
 

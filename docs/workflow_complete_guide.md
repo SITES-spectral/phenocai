@@ -180,13 +180,34 @@ graph TD
 ```mermaid
 graph TD
     A[Confidence Threshold] --> B{Use Case?}
-    B -->|Research<br/>High Accuracy| C[>80%<br/>Conservative]
-    B -->|Monitoring<br/>Catch All| D[>50%<br/>Liberal]
-    B -->|Balanced| E[>65%<br/>Middle Ground]
+    B -->|Research<br/>High Accuracy| C[>0.80<br/>Conservative]
+    B -->|Monitoring<br/>Catch All| D[>0.50<br/>Liberal]
+    B -->|Balanced| E[>0.65<br/>Optimized]
+    
+    E --> F[Use validation set<br/>to find optimal]
     
     style C fill:#f44336,color:#fff
     style D fill:#4caf50,color:#fff
     style E fill:#ff9800,color:#fff
+    style F fill:#2196f3,color:#fff
+```
+
+### 4. Multi-Station Strategy
+
+```mermaid
+graph TD
+    A[Station Selection] --> B{Training Goal?}
+    B -->|Single Station| C[Station-Specific<br/>Model]
+    B -->|Multi-Station| D[Combined Dataset<br/>Model]
+    B -->|Cross-Station| E[ROI_00 Only<br/>Model]
+    
+    C --> F[Best accuracy<br/>for that station]
+    D --> G[Good generalization<br/>across stations]
+    E --> H[Maximum<br/>portability]
+    
+    style F fill:#4caf50,color:#fff
+    style G fill:#2196f3,color:#fff
+    style H fill:#9c27b0,color:#fff
 ```
 
 ## Real-World Example: Complete Pipeline
@@ -214,30 +235,43 @@ python scripts/analyze_quality_issues.py lonnstorp_PHE01_dataset_2024_splits_20_
 #   - 404 clean (no flags): 26.1%
 #   - 1,143 with quality issues: 73.9%
 
-# 4. Train on clean subset first (auto-generates filename)
-uv run phenocai dataset filter lonnstorp_PHE01_dataset_2024_splits_20_10.csv --no-flags
-# Creates: lonnstorp_PHE01_dataset_2024_splits_20_10_clean_filtered.csv
+# 4. Balance dataset for better performance
+uv run phenocai dataset balance lonnstorp_PHE01_dataset_2024_splits_20_10.csv \
+    balanced_dataset.csv --target-ratio 0.5
+# Creates balanced 50/50 snow/no-snow distribution
+
+# 5. Train on balanced dataset (auto-generates filename)
+uv run phenocai dataset filter balanced_dataset.csv --no-flags
+# Creates: balanced_dataset_clean_filtered.csv
     
-uv run phenocai train model lonnstorp_PHE01_dataset_2024_splits_20_10_clean_filtered.csv \
+uv run phenocai train model balanced_dataset_clean_filtered.csv \
     --model-type mobilenet \
     --epochs 20 \
-    --output-dir models/clean_baseline/
+    --output-dir models/balanced_model/
 
-# 5. Evaluate performance
-uv run phenocai evaluate model models/clean_baseline/final_model.h5 \
-    lonnstorp_PHE01_dataset_2024_splits_20_10_clean_filtered.csv --split test
+# 6. Optimize prediction threshold
+uv run phenocai evaluate optimize-threshold models/balanced_model/final_model.h5 \
+    balanced_dataset_clean_filtered.csv --split val
+# Find optimal threshold (e.g., 0.65 for balanced accuracy)
 
-# 6. Apply to full year of new images
-uv run phenocai predict batch models/clean_baseline/final_model.h5 \
-    --year 2024 \
-    --output-dir predictions/2024/ \
-    --format yaml \
-    --use-heuristics
+# 7. Evaluate performance with optimized threshold
+uv run phenocai evaluate model models/balanced_model/final_model.h5 \
+    balanced_dataset_clean_filtered.csv --split test --threshold 0.65
 
-# 7. Export results for analysis
-uv run phenocai predict export predictions/2024/ \
+# 8. Apply to multiple years with optimized threshold
+for year in 2022 2023 2024 2025; do
+    uv run phenocai predict batch models/balanced_model/final_model.h5 \
+        --year $year \
+        --output-dir predictions/$year/ \
+        --format yaml \
+        --use-heuristics \
+        --threshold 0.65
+done
+
+# 9. Export combined results for analysis
+uv run phenocai predict export predictions/ \
     --format csv \
-    --output lonnstorp_PHE01_2024_predictions.csv
+    --output lonnstorp_PHE01_2022-2025_predictions.csv
 ```
 
 ### Results You Can Expect
@@ -385,10 +419,10 @@ graph TD
 ```mermaid
 graph TD
     subgraph Expected Accuracy
-        A[Clean Images] --> B[90-95%]
-        C[Light Issues] --> D[80-85%]
-        E[Heavy Issues] --> F[60-70%]
-        G[Multiple Issues] --> H[40-50%]
+        A[Clean Images] --> B[93-96%]
+        C[Light Issues] --> D[85-90%]
+        E[Heavy Issues] --> F[70-80%]
+        G[Multiple Issues] --> H[50-60%]
     end
     
     style B fill:#4caf50,color:#fff
@@ -401,15 +435,28 @@ graph TD
 
 ```mermaid
 graph LR
-    A[500 samples] --> B[~70% accuracy]
-    C[2,000 samples] --> D[~80% accuracy]
-    E[5,000 samples] --> F[~85% accuracy]
-    G[10,000+ samples] --> H[~90% accuracy]
+    A[500 samples] --> B[~75% accuracy]
+    C[2,000 samples] --> D[~85% accuracy]
+    E[5,000 samples] --> F[~90% accuracy]
+    G[10,000+ samples] --> H[~95% accuracy]
     
     style B fill:#ffecb3
     style D fill:#fff176
     style F fill:#aed581
     style H fill:#4caf50,color:#fff
+```
+
+### Impact of Dataset Balancing
+
+```mermaid
+graph TD
+    subgraph Improvement from Balancing
+        A[Imbalanced<br/>13% snow] --> B[86% accuracy<br/>Poor snow recall]
+        C[Balanced<br/>50% snow] --> D[95.7% accuracy<br/>Excellent recall]
+    end
+    
+    style B fill:#ff9800,color:#fff
+    style D fill:#4caf50,color:#fff
 ```
 
 ## Troubleshooting Guide

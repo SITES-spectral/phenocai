@@ -41,12 +41,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Untitled 1.md",
+                "file": "phenocai_comprehensive_research_report.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Untitled 1"
+              "title": "phenocai_comprehensive_research_report"
             }
           }
         ],
@@ -199,8 +199,31 @@
   },
   "active": "aa394c8dc8cc9363",
   "lastOpenFiles": [
-    "Untitled.md",
+    "phenocai_student_handout.md",
+    "phenocai_for_geography_students.md",
+    "figures/educational/workflow_diagram.png",
+    "figures/educational/ecosystem_applications.png",
+    "figures/educational/seasonal_performance.png",
+    "figures/educational/method_comparison_simple.png",
+    "figures/educational/data_imbalance_explanation.png",
+    "figures/educational/snow_detection_challenges.png",
+    "figures/educational/phenocam_concept.png",
+    "figures/educational",
+    "comprehensive_method_evaluation.md",
+    "figures/threshold_analysis.png",
+    "figures/system_architecture.png",
+    "figures/performance_comparison.png",
     "Untitled 1.md",
+    "phenocai_paths_and_configurations.md",
+    "figures",
+    "phenocai_comprehensive_research_report.md",
+    "heuristic_improvements_guide.md",
+    "project_status_summary.md",
+    "model_improvement_guide.md",
+    "snow_detection_predictions_evaluation.md",
+    "snow_predictions_2022-2023_report.md",
+    "balanced_dataset_training_report.md",
+    "Untitled.md",
     "model_evaluation_findings.md",
     "workflow_annotation_generation.md",
     "cross_station_evaluation.md",

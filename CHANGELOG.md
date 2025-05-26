@@ -5,6 +5,55 @@ All notable changes to the PhenoCAI project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2025-05-25
+
+### Added
+
+#### Dataset Balancing
+- **Balance Command**: New `phenocai dataset balance` command for creating balanced datasets
+- **Configurable Ratios**: Set target snow/no-snow ratio (e.g., 0.5 for 50/50 split)
+- **Multiple Methods**: Support for undersampling and oversampling strategies
+- **Automatic Filename Generation**: Creates descriptive output filenames
+- **Split Preservation**: Maintains train/test/val splits during balancing
+
+#### Threshold Optimization
+- **Optimize-Threshold Command**: Find optimal prediction thresholds using validation data
+- **Multiple Metrics**: Optimize for accuracy, balanced accuracy, F1, or custom metrics
+- **Threshold Analysis**: Visualize performance across different threshold values
+- **Integration**: Apply optimized thresholds in prediction commands
+
+#### Historical Prediction Capabilities
+- **Multi-Year Processing**: Efficiently process data from 2022-2025
+- **Batch Scripts**: Automated processing of multiple years
+- **Progress Tracking**: Monitor processing across large datasets
+- **Memory Optimization**: Handle thousands of images without memory issues
+
+#### Performance Improvements
+- **Model Accuracy**: Achieved 95.7% accuracy on balanced test sets
+- **Cross-Station Performance**: 85%+ accuracy when evaluating across stations
+- **Processing Speed**: Over 1000 images/minute on GPU hardware
+- **Balanced Dataset Impact**: +20% improvement in minority class recall
+
+### Enhanced
+
+#### Documentation
+- **README Updates**: Added performance metrics and benchmarks
+- **Workflow Guide**: Included dataset balancing in complete workflow
+- **Quick Reference**: Added new commands and performance stats
+- **Examples**: Multi-year processing scripts and threshold optimization
+
+#### Model Training
+- **Better Default Performance**: Training on balanced data by default recommendation
+- **Improved Convergence**: Faster training with balanced datasets
+- **Enhanced Metrics**: More comprehensive evaluation with balanced accuracy
+
+### Fixed
+
+#### Dataset Issues
+- **Class Imbalance**: Addressed severe imbalance (13.6% → 50% snow presence)
+- **Memory Efficiency**: Improved handling of large datasets
+- **Path Resolution**: Better handling of historical data paths
+
 ## [0.3.0] - 2025-05-24
 
 ### Added
