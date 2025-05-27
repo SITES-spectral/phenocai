@@ -5,20 +5,6 @@
 
 ["SITES spectral"](https://www.fieldsites.se/en-GB/sites-thematic-programs/sites-spectral-32634403)
 
-## Maintainers
-
-* José M. Beltrán-Abaunza, PhD | Lund University, Department of Physical Geography and Ecosystem Science | SITES spectral Research Engineer
-
-## Contributors
-
-* José M. Beltrán-Abaunza, PhD | Lund University, Department of Physical Geography and Ecosystem Science | SITES spectral Research Engineer
-* Lars Eklundh, Professor | Lund University, Department of Physical Geography and Ecosystem Science | SITES spectral Coordinator
-* Kexin Guo | Lund University, Department of Physical Geography and Ecosystem Science | Bachelor program 2022-2025 | Supported UX and code alpha testing, manual annotations, modelling tests, data analysis and codebase debugging. Thesis to be linked here.
-
-## Development Support
-
-This package was developed with support from [Claude](https://claude.ai/code) (Anthropic's Claude 3.5 Sonnet model), which assisted with code refactoring, documentation organization, and architectural improvements.
-
 
 # PhenoCAI
 
@@ -541,6 +527,21 @@ uv run black src/
 uv run isort src/
 ```
 
+## Maintainers
+
+* José M. Beltrán-Abaunza, PhD | Lund University, Department of Physical Geography and Ecosystem Science | SITES spectral Research Engineer
+
+## Contributors
+
+* José M. Beltrán-Abaunza, PhD | Lund University, Department of Physical Geography and Ecosystem Science | SITES spectral Research Engineer
+* Lars Eklundh, Professor | Lund University, Department of Physical Geography and Ecosystem Science | SITES spectral Coordinator
+* Kexin Guo | Lund University, Department of Physical Geography and Ecosystem Science | Bachelor program 2022-2025 | Supported UX and code alpha testing, manual annotations, modelling tests, data analysis and codebase debugging. Thesis to be linked here.
+
+## Development Support
+
+This package was developed with support from [Claude](https://claude.ai/code) (Anthropic's Claude 3.5 Sonnet model), which assisted with code refactoring, documentation organization, and architectural improvements.
+
+
 ## Citation
 
 If you use this package in your research, please cite it as follows:
@@ -569,9 +570,6 @@ Beltrán-Abaunza, José M., and Lars Eklundh. *PhenoCAI: A Python Package for Au
 *Replace [version] with the specific version number you used.*
 
 
-## License
-
-[License information to be added]
 
 ## Acknowledgments
 
