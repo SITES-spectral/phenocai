@@ -573,4 +573,4 @@ Beltrán-Abaunza, José M., and Lars Eklundh. *PhenoCAI: A Python Package for Au
 
 ## Acknowledgments
 
-This project is supported by the Swedish Infrastructure for Ecosystem Science (SITES) and uses data from the SITES Spectral thematic program. Special thanks to the researchers and technicians maintaining the phenocam networks at Lönnstorp and Röbäcksdalen stations.
+This project is supported by the Swedish Infrastructure for Ecosystem Science (SITES) and uses data from the SITES Spectral thematic program. Special thanks to the researchers and technicians maintaining the phenocam networks at SITES Spectral stations.
