@@ -19,32 +19,6 @@
 
 This package was developed with support from [Claude](https://claude.ai/code) (Anthropic's Claude 3.5 Sonnet model), which assisted with code refactoring, documentation organization, and architectural improvements.
 
-## Citation
-
-If you use this package in your research, please cite it as follows:
-
-**Chicago Style (Author-Date):**
-
-Beltrán-Abaunza, José M., and Lars Eklundh. *PhenoCAI: A Python Package for Automated Phenological Camera Image Analysis*. Version [version]. Lund: SITES Spectral Thematic Center, Lund University, 2025. https://github.com/sites-spectral/phenocai.
-
-**Chicago Style (Notes-Bibliography):**
-
-Beltrán-Abaunza, José M., and Lars Eklundh. *PhenoCAI: A Python Package for Automated Phenological Camera Image Analysis*. Version [version]. Lund: SITES Spectral Thematic Center, Lund University, 2025. https://github.com/sites-spectral/phenocai.
-
-**BibTeX:**
-```bibtex
-@software{beltran_abaunza_phenocai_2025,
-  author = {Beltrán-Abaunza, José M. and Eklundh, Lars},
-  title = {PhenoCAI: A Python Package for Automated Phenological Camera Image Analysis},
-  year = {2025},
-  publisher = {SITES Spectral Thematic Center, Lund University},
-  address = {Lund, Sweden},
-  url = {https://github.com/sites-spectral/phenocai},
-  note = {Version [version]}
-}
-```
-
-*Replace [version] with the specific version number you used.*
 
 # PhenoCAI
 
@@ -569,10 +543,31 @@ uv run isort src/
 
 ## Citation
 
-If you use PhenoCAI in your research, please cite:
+If you use this package in your research, please cite it as follows:
+
+**Chicago Style (Author-Date):**
+
+Beltrán-Abaunza, José M., and Lars Eklundh. *PhenoCAI: A Python Package for Automated Phenological Camera Image Analysis*. Version [version]. Lund: SITES Spectral Thematic Center, Lund University, 2025. https://github.com/sites-spectral/phenocai.
+
+**Chicago Style (Notes-Bibliography):**
+
+Beltrán-Abaunza, José M., and Lars Eklundh. *PhenoCAI: A Python Package for Automated Phenological Camera Image Analysis*. Version [version]. Lund: SITES Spectral Thematic Center, Lund University, 2025. https://github.com/sites-spectral/phenocai.
+
+**BibTeX:**
+```bibtex
+@software{beltran_abaunza_phenocai_2025,
+  author = {Beltrán-Abaunza, José M. and Eklundh, Lars},
+  title = {PhenoCAI: A Python Package for Automated Phenological Camera Image Analysis},
+  year = {2025},
+  publisher = {SITES Spectral Thematic Center, Lund University},
+  address = {Lund, Sweden},
+  url = {https://github.com/sites-spectral/phenocai},
+  note = {Version [version]}
+}
 ```
-[Citation information to be added]
-```
+
+*Replace [version] with the specific version number you used.*
+
 
 ## License
 
