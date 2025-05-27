@@ -230,3 +230,12 @@ conversation_*.json
 session_*.json
 ai_log_*.txt
 claude_log_*.txt
+
+# Legacy documentation (contains evaluation results and training data)
+docs/legacy/
+
+# Training results and model evaluation reports
+*_evaluation_results*
+*_training_results*
+*_model_performance*
+*_test_results*

@@ -1,18 +1,50 @@
-![alt text](https://h24-original.s3.amazonaws.com/231546/28893673-EQhe9.png "SITES Spectral Thematic Center")
-# Swedish Infrastructure for Ecosystem Science (SITES) - Spectral | Thematic Center (SSTC)
-["SITES spectral"](https://www.fieldsites.se/en-GB/sites-thematic-programs/sites-spectral-32634403)
+---
+![SITES Spectral Thematic Center](https://h24-original.s3.amazonaws.com/231546/28893673-EQhe9.png "SITES Spectral Thematic Center")
 
+# Swedish Infrastructure for Ecosystem Science (SITES) - Spectral | Thematic Center (SSTC)
+
+["SITES spectral"](https://www.fieldsites.se/en-GB/sites-thematic-programs/sites-spectral-32634403)
 
 ## Maintainers
 
 * José M. Beltrán-Abaunza, PhD | Lund University, Department of Physical Geography and Ecosystem Science | SITES spectral Research Engineer
 
-
 ## Contributors
 
 * José M. Beltrán-Abaunza, PhD | Lund University, Department of Physical Geography and Ecosystem Science | SITES spectral Research Engineer
-
 * Lars Eklundh, Professor | Lund University, Department of Physical Geography and Ecosystem Science | SITES spectral Coordinator
+* Kexin Guo | Lund University, Department of Physical Geography and Ecosystem Science | Bachelor program 2022-2025 | Supported UX and code alpha testing, data analysis and codebase debugging. Thesis to be linked here.
+
+## Development Support
+
+This package was developed with support from [Claude](https://claude.ai/code) (Anthropic's Claude 3.5 Sonnet model), which assisted with code refactoring, documentation organization, and architectural improvements.
+
+## Citation
+
+If you use this package in your research, please cite it as follows:
+
+**Chicago Style (Author-Date):**
+
+Beltrán-Abaunza, José M., and Lars Eklundh. *PhenoCAI: A Python Package for Automated Phenological Camera Image Analysis*. Version [version]. Lund: SITES Spectral Thematic Center, Lund University, 2025. https://github.com/sites-spectral/phenocai.
+
+**Chicago Style (Notes-Bibliography):**
+
+Beltrán-Abaunza, José M., and Lars Eklundh. *PhenoCAI: A Python Package for Automated Phenological Camera Image Analysis*. Version [version]. Lund: SITES Spectral Thematic Center, Lund University, 2025. https://github.com/sites-spectral/phenocai.
+
+**BibTeX:**
+```bibtex
+@software{beltran_abaunza_phenocai_2025,
+  author = {Beltrán-Abaunza, José M. and Eklundh, Lars},
+  title = {PhenoCAI: A Python Package for Automated Phenological Camera Image Analysis},
+  year = {2025},
+  publisher = {SITES Spectral Thematic Center, Lund University},
+  address = {Lund, Sweden},
+  url = {https://github.com/sites-spectral/phenocai},
+  note = {Version [version]}
+}
+```
+
+*Replace [version] with the specific version number you used.*
 
 # PhenoCAI
 
@@ -45,29 +77,24 @@ PhenoCAI (Phenological Camera AI) is a Python package for automated analysis and
 - **Dynamic Instrument Validation** against stations.yaml configuration
 - **Cross-station compatibility** through ROI_00 standardization
 
-## What's New (v0.4.0)
+## What's New
 
-### Dataset Balancing and Optimization
+### Dataset Management
 - **Smart Dataset Balancing**: Automatic balancing of snow/no-snow samples with configurable ratios
 - **Threshold Optimization**: Find optimal prediction thresholds using validation data
-- **Enhanced Cross-Station Evaluation**: Improved performance across different locations
+- **Enhanced Cross-Station Support**: Train and evaluate across different locations
 
-### Historical Prediction Capabilities
-- **Multi-Year Processing**: Process historical data from 2022-2025 efficiently
+### Processing Capabilities
+- **Multi-Year Processing**: Process historical data efficiently
 - **Batch Prediction Pipeline**: Optimized for processing large volumes of images
 - **Confidence-Based Filtering**: Apply custom thresholds for production use
 
-### Performance Improvements
-- **Model Accuracy**: 95.7% accuracy on balanced test sets (up from 92%)
-- **Cross-Station Performance**: 85%+ accuracy when evaluating across stations
-- **Processing Speed**: 1000+ images/minute on GPU hardware
-
-### Previous Features (v0.3.0)
+### Features
 - **ROI_00 Automatic Calculation**: Advanced sky detection algorithm
 - **Cross-Station Training**: Train on one station and evaluate on others
 - **Complete Pipeline Command**: Single command automation
 - **Interactive Marimo Notebook**: Visual pipeline execution
-- **Annotation Generation**: Create annotations using ML predictions
+- **Annotation Generation**: Create annotations using ML and heuristics
 
 See [CHANGELOG.md](CHANGELOG.md) for full details.
 
@@ -330,19 +357,15 @@ annotations:
     not_needed: false
 ```
 
-## Dataset Statistics
+## Dataset Structure
 
-### Lönnstorp Station
-- **Total images**: 1,467
-- **Total annotations**: 5,559  
-- **Snow presence**: 13.6% → 31.6% (after filtering)
-- **Images with quality flags**: 89.9%
-- **Most common issues**: high_brightness (35.9%), fog (26.1%)
+The dataset CSV files include fields for:
+- Image metadata (filename, station, instrument, timestamp)
+- ROI information and quality flags
+- Snow presence annotations
+- Train/test/val split assignments
 
-### After Quality Filtering
-- **Usable images**: 2,163 (reduced from 5,559)
-- **Improved class balance**: Snow presence increased to 31.6%
-- **Better model performance**: Reduced noise from problematic images
+See the [Data Preparation Guide](docs/workflows/workflow_data_preparation.md) for details on dataset creation.
 
 ## Cross-Station Evaluation
 
@@ -477,36 +500,22 @@ uv run phenocai train fine-tune models/mobilenet_full new_data.csv
 uv run phenocai evaluate model models/final_model.h5 holdout_test.csv --analyze-errors
 ```
 
-## Performance Expectations
-
-### Current Model Performance (v0.4.0)
-
-#### Lönnstorp Station (Primary)
-- **Overall Accuracy**: 95.7% on balanced test set
-- **Snow Detection**: 96.2% precision, 95.1% recall
-- **No-Snow Detection**: 95.1% precision, 96.2% recall
-- **Processing Speed**: 1000+ images/minute on GPU
-
-#### Cross-Station Evaluation
-- **Lönnstorp → Röbäcksdalen**: 85.3% accuracy
-- **Multi-Station Training**: 88.7% average accuracy
-- **ROI_00 Standardization**: +5% improvement in cross-station performance
+## Performance
 
 ### Heuristic Methods
-- **Snow Detection**: Good performance on clear images
-- **Quality Assessment**: Reliable for obvious issues
-- **Speed**: Very fast, suitable for real-time processing
+- **Snow Detection**: Fast rule-based detection for clear images
+- **Quality Assessment**: Identify common image quality issues
+- **Speed**: Suitable for real-time processing
 
 ### Deep Learning Models
-- **Transfer Learning**: 90-96% accuracy on balanced data
-- **Custom CNN**: 85-92% accuracy, faster inference
-- **Ensemble**: 93-97% accuracy, best robustness
+- **Transfer Learning**: MobileNetV2 pre-trained on ImageNet
+- **Custom CNN**: Lightweight architectures for phenocam images
+- **Ensemble**: Combine multiple models for improved robustness
 
-### Data Quality Impact
-- **Clean Data**: +10-15% accuracy improvement
-- **Balanced Classes**: +20% improvement in minority class recall
-- **Large Dataset**: Improved generalization
-- **Threshold Optimization**: +3-5% accuracy gain
+### Processing Capabilities
+- **GPU Support**: Accelerated training and inference
+- **Batch Processing**: Efficient handling of large image datasets
+- **Memory Management**: Optimized for limited resources
 
 ## Current Status
 
