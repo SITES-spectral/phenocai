@@ -29,6 +29,26 @@ stations:
               instrument_azimuth_in_degrees: 270
               instrument_degrees_from_nadir: 90
               rois:
+                ROI_00:
+                  alpha: 0.0
+                  auto_generated: true
+                  color:
+                  - 255
+                  - 255
+                  - 255
+                  description: Full image excluding sky (auto-calculated)
+                  generated_date: '2025-06-02'
+                  points:
+                  - - 0
+                    - 1041
+                  - - 4287
+                    - 1041
+                  - - 4287
+                    - 2847
+                  - - 0
+                    - 2847
+                  source_image: abisko_ANS_FOR_BL01_PHE01_2023_152_20230601_092630.jpg
+                  thickness: 7
                 ROI_01:
                   points:
                   - - 100
@@ -104,6 +124,26 @@ stations:
               instrument_azimuth_in_degrees: null
               instrument_degrees_from_nadir: 90
               rois:
+                ROI_00:
+                  alpha: 0.2
+                  auto_generated: true
+                  color:
+                  - 255
+                  - 255
+                  - 255
+                  description: Full image excluding sky (auto-calculated)
+                  generated_date: '2025-06-02'
+                  points:
+                  - - 0
+                    - 748
+                  - - 3071
+                    - 748
+                  - - 3071
+                    - 2047
+                  - - 0
+                    - 2047
+                  source_image: grimso_GRI_FOR_BL01_PHE01_2020_152_20200531_080003.jpg
+                  thickness: 7              
                 ROI_01:
                   points:
                   - - 0
@@ -555,13 +595,33 @@ stations:
                 point:
                   epsg: epsg:4326
                   latitude_dd: 58.363865
-                  longitude_dd: 58.363865
+                  longitude_dd: 12.149763
               instrument_height_in_meters_above_ground: 38
               instrument_viewing_direction: South
               instrument_azimuth_in_degrees: 185
               instrument_degrees_from_nadir: 38
               legacy_acronym: CEM01-FOR-P01
               rois:
+                ROI_00:
+                  alpha: 0.2
+                  auto_generated: true
+                  color:
+                  - 255
+                  - 255
+                  - 255
+                  description: Full image excluding sky (auto-calculated)
+                  generated_date: '2025-06-02'
+                  points:
+                  - - 0
+                    - 0
+                  - - 3071
+                    - 0
+                  - - 3071
+                    - 2047
+                  - - 0
+                    - 2047
+                  source_image: skogaryd_SKC_CEM_FOR_PL01_PHE01_2021_152_20210601_040000.jpg
+                  thickness: 7              
                 ROI_01:
                   points:
                   - - 300
@@ -617,6 +677,26 @@ stations:
               instrument_degrees_from_nadir: 47
               legacy_acronym: CEM02-FOR-P02
               rois:
+                ROI_00:
+                  alpha: 0.2
+                  auto_generated: true
+                  color:
+                  - 255
+                  - 255
+                  - 255
+                  description: Full image excluding sky (auto-calculated)
+                  generated_date: '2025-06-02'
+                  points:
+                  - - 0
+                    - 0
+                  - - 3071
+                    - 0
+                  - - 3071
+                    - 2047
+                  - - 0
+                    - 2047
+                  source_image: skogaryd_SKC_CEM_FOR_PL02_PHE01_2021_152_20210601_040000.jpg
+                  thickness: 7              
                 ROI_01:
                   points:
                   - - 2550
@@ -653,6 +733,26 @@ stations:
               instrument_degrees_from_nadir: 42
               legacy_acronym: CEM03-FOR-P03
               rois:
+                ROI_00:
+                  alpha: 0.2
+                  auto_generated: true
+                  color:
+                  - 255
+                  - 255
+                  - 255
+                  description: Full image excluding sky (auto-calculated)
+                  generated_date: '2025-06-02'
+                  points:
+                  - - 0
+                    - 0
+                  - - 3071
+                    - 0
+                  - - 3071
+                    - 2047
+                  - - 0
+                    - 2047
+                  source_image: skogaryd_SKC_CEM_FOR_PL03_PHE01_2021_152_20210601_040000.jpg
+                  thickness: 7              
                 ROI_01:
                   points:
                   - - 500
@@ -748,7 +848,7 @@ stations:
               rois:
                 ROI_00: null
             SKC_MAD_WET_PL01_PHE01:
-              id: SKC_WET_PL02_PHE01
+              id: SKC_MAD_WET_PL01_PHE01
               type: phenocam
               ecosystem: WET
               location: PL02
@@ -769,9 +869,28 @@ stations:
               instrument_degrees_from_nadir: null
               legacy_acronym: MAD-WET-P01
               rois:
-                ROI_00: null
+                ROI_00:
+                  alpha: 0.2
+                  auto_generated: true
+                  color:
+                  - 255
+                  - 255
+                  - 255
+                  description: Full image excluding sky (auto-calculated)
+                  generated_date: '2025-06-02'
+                  points:
+                  - - 0
+                    - 201
+                  - - 1023
+                    - 201
+                  - - 1023
+                    - 767
+                  - - 0
+                    - 767
+                  source_image: skogaryd_SKC_MAD_WET_PL01_PHE01_2024_152_20240531_070000.jpg
+                  thickness: 7
             SKC_MAD_FOR_PL02_PHE01:
-              id: SKC_FOR_PL04_PHE01
+              id: SKC_MAD_FOR_PL02_PHE01
               type: phenocam
               ecosystem: FOR
               location: PL04
@@ -792,7 +911,26 @@ stations:
               instrument_degrees_from_nadir: null
               legacy_acronym: MAD-FOR-P01
               rois:
-                ROI_00: null
+                ROI_00:
+                  alpha: 0.2
+                  auto_generated: true
+                  color:
+                  - 255
+                  - 255
+                  - 255
+                  description: Full image excluding sky (auto-calculated)
+                  generated_date: '2025-06-02'
+                  points:
+                  - - 0
+                    - 511
+                  - - 3071
+                    - 511
+                  - - 3071
+                    - 2047
+                  - - 0
+                    - 2047
+                  source_image: skogaryd_SKC_MAD_FOR_PL02_PHE01_2023_152_20230601_070000.jpg
+                  thickness: 7
             SKC_SRC_FOL_WET_PL01_PHE01:
               id: SKC_SRC_FOL_WET_PL01_PHE01
               type: phenocam
@@ -865,6 +1003,27 @@ stations:
               instrument_azimuth_in_degrees: 317
               instrument_degrees_from_nadir: 81
               legacy_acronym: DEG-MIR-P01
+              rois:
+                ROI_00:
+                  alpha: 0.2
+                  auto_generated: true
+                  color:
+                  - 255
+                  - 255
+                  - 255
+                  description: Full image excluding sky (auto-calculated)
+                  generated_date: '2025-06-02'
+                  points:
+                  - - 0
+                    - 748
+                  - - 3071
+                    - 748
+                  - - 3071
+                    - 2047
+                  - - 0
+                    - 2047
+                  source_image: svartberget_SVB_MIR_PL01_PHE01_2022_152_20220601_000002.jpg
+                  thickness: 7              
             SVB_MIR_PL02_PHE01:
               id: SVB_MIR_PL02_PHE01
               type: phenocam
@@ -988,6 +1147,26 @@ stations:
               instrument_degrees_from_nadir: 45
               legacy_acronym: SVB-FOR-P01
               rois:
+                ROI_00:
+                  alpha: 0.2
+                  auto_generated: true
+                  color:
+                  - 255
+                  - 255
+                  - 255
+                  description: Full image excluding sky (auto-calculated)
+                  generated_date: '2025-06-02'
+                  points:
+                  - - 0
+                    - 744
+                  - - 3071
+                    - 744
+                  - - 3071
+                    - 2047
+                  - - 0
+                    - 2047
+                  source_image: svartberget_SVB_FOR_PL01_PHE01_2022_152_20220601_060003.jpg
+                  thickness: 7              
                 ROI_01:
                   points:
                   - - 700
@@ -1045,6 +1224,26 @@ stations:
               instrument_degrees_from_nadir: 45
               legacy_acronym: SVB-FOR-P02
               rois:
+                ROI_00:
+                  alpha: 0.2
+                  auto_generated: true
+                  color:
+                  - 255
+                  - 255
+                  - 255
+                  description: Full image excluding sky (auto-calculated)
+                  generated_date: '2025-06-02'
+                  points:
+                  - - 0
+                    - 748
+                  - - 3071
+                    - 748
+                  - - 3071
+                    - 2047
+                  - - 0
+                    - 2047
+                  source_image: svartberget_SVB_FOR_PL01_PHE02_2025_051_20250220_100000.jpg
+                  thickness: 7              
                 ROI_01:
                   points:
                   - - 700
